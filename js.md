@@ -41,20 +41,20 @@ console.log(refA, 'refA'); // 解除引用
 
 ## 闭包
 
-（1）有外层函数嵌套内层函数；
-（2）内层函数使用外层函数的局部变量；
-（3）内层函数返回外部，并且被全局变量保存。
-作用：实现数据的私有，外部可以使用内部函数的变量
-风险：可能会导致内存的泄露
-function outer (){
-let i = 0
-return function inner(){
-i++;
-console.log(i)
-}
-}
-const fun = outer() => fun = function inner(){}
-注意：由于全局定义了 fun = function inner(){}，所以 inner 一直存在，inner 函数使用了 i，i 一直存在。
+（1）有外层函数嵌套内层函数；  
+（2）内层函数使用外层函数的局部变量；  
+（3）内层函数返回外部，并且被全局变量保存。  
+作用：实现数据的私有，外部可以使用内部函数的变量  
+风险：可能会导致内存的泄露  
+function outer (){    
+  let i = 0   
+  return function inner(){    
+    i++;    
+    console.log(i)    
+  }   
+}   
+const fun = outer() => fun = function inner(){}  
+注意：由于全局定义了 fun = function inner(){}，所以 inner 一直存在，inner 函数使用了 i，i 一直存在。  
 
 ## 作用域和作用域链（执行上下文和执行栈的理解）
 
