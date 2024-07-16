@@ -544,14 +544,14 @@ Promise.race([promise1, promise2, promise3])
 4、提高代码可读性：面向对象的代码通常更符合现实世界的思维方式，使代码更易于理解。
 
 
-## 如何实现两栏布局，右侧自适应？三栏布局中间自适应呢？
+## 如何实现两栏布局，右侧自适应？三栏布局中间自适应呢？（如何居中处理）
 1、采用flex布局：大盒子采用 display: flex;左边固定宽高，右边设置flex-grow: 1; 三栏布局的原理一样
 `flex-grow:（将剩余空间）按照比例拓展。区别于flex：1.将全部空间按比例分。一般这两个属性都有其它值。例如flex-grow:1，flex-grow:2即第一份占比三分之一 `
 flex-direction：主轴方向
 flex-wrap：是否换行
 flex-flow：（将剩余空间）按照比例拓展
-justify-content：主轴上的对齐方式
-align-items：交叉轴的对齐方式
+justify-content：主轴上的对齐方式  
+align-items：交叉轴的对齐方式  
 align-content：定义了多根轴线的对齐方式。如果项目只有一根轴线，该属性不起作用
 `item属性（子元素）：order，定义了item的排列顺序，数字越小，排列越靠前`
 使用场景：方便实现元素水平垂直居中，方便自适应布局，目前移动端、小程序开发基本都建议Flex布局
@@ -564,7 +564,11 @@ grid-template-areas：用于定义区域
 `简写：grid-template`
 repeat(a,b)重复的次数和重复的值
 
-`justify-items: center; align-items: center; 居中处理`
+1、`justify-items: center; align-items: center; 居中处理`  flex布局和grid布局都是这么处理的
+2、通过定位和transform：先定位50%，50%。在移动translate（-50%，-50%）
+3、定位和margin：和上面的原理一样，设置margin-left和margin-top都为负值，缺点需要计算具体的px值。
+4、table:设置父元素为display:table-cell，子元素设置 display: inline-block。利用vertical:middle和text-align:center可以让所有的行内块级元素水平垂直居中
+
 Grid布局：是一种二维布局系统，用于创建复杂的网页布局。它通过行和列将页面分成网格，从而可以轻松地将内容放置在网格中的任意位置。[把flex布局看成一维布局]
 
 3、定位：用100vw减去两边的宽度
@@ -583,7 +587,306 @@ overflow：文字长度超出限定宽度，则隐藏超出的内容
 1、伪元素  ::after 设置里面的内容content：...,设置父元素的高度，超过部分隐藏overflow: hidden;，再加上定位（基于高度截断）
 2、-webkit-line-clamp: 2 （基于行数截断）
 
-## 
+## 谈谈你对BFC的理解？(主要用来解决margin坍塌，float元素覆盖后面的元素的问题)
+BFC:块级格式化上下文，它是页面中的一块渲染区域，并且有一套自己的渲染规则
+
+触发条件：
+1、根元素，即HTML元素
+2、浮动元素：float值为left、right  `父元素设置float属性`
+3、overflow值不为 visible，为 auto、scroll、hidden  `除了visable其它都可`
+4、display的值为`inline-block`、inltable-cell、table-caption、table、inline-table、flex、inline-flex、grid、inline-grid
+5、position的值为absolute或fixed
+6、设置display：flow-root
+
+`理解：按照正常块级排列的方式来说，有很多缺陷，因此给块级元素内部开启BFC以解决这些排放的缺陷。即给块级元素设置一个独立的排列规则`
+
+常规块级元素排列有以下缺陷：
+1、水平方向上，撑满整个包含块宽度，垂直方向上，依次摆放
+2、垂直方向上相邻的元素，margin会合并   `比如第一个div设置margin10px，第二个div设置margin20px，会合并小的margin，因此两者的间距为20px`
+3、父子关系情况下可能会产生margin塌陷   `margin塌陷：在垂直方向上，子元素和父元素的margin不存在（当设置了margin的情况下）` ：此处也可以给父盒子设置padding或者border属性也可以解决
+4、父子关系情况下，父元素无视浮动元素会产生高度坍塌
+`父元素没有设置高度的情况下，其高度是由子元素撑开的，但当子元素都设置了浮动元素之外，父元素无法获取子元素的高度，也就是父元素高度为0，看不到了`
+5、兄弟关系下，正常元素可能会被浮动元素覆盖（正常元素在浮动元素之后）        =>可以理解为开启BFC后，不同的BFC区域渲染时不会相打扰
+`浮动元素相比较正常元素层级更高，但不占有空间，当设置浮动元素后，后面的元素会被浮动元素覆盖`注意：开启display:absolute这个层级比float属性更高，因此后面的元素覆盖浮动元素
+
+开启BFC
+1、其子元素不再产生margin塌陷的问题
+2、就算子元素浮动，自身高度也不会坍塌（高度计算不在无视浮动元素）
+3、自身不会被其它元素覆盖
+`注意：BFC不能解决margin合并的问题，直接多设置了margin宽度即可`
+
+## 说说你对汇编语言的理解？有哪些区别？（scss的优势）
+变量：
+作用域：
+代码混合：
+嵌套：
+代码模块化：
+
+`基本使用：`
+less和scss
+.box{
+  display:block
+}
+sass stylus
+.box
+  display:block
+`嵌套：`
+三者的嵌套语法都是一致的，甚至连引用父级选择器的标记 & 也相同，`区别只是Sass和Stylus可以用没有大括号的方式书写`
+.a {
+  &.b {
+    color: red;
+  }
+}
+`变量:`变量无疑为 Css 增加了一种有效的复用方式，减少了原来在 Css 中无法避免的重复「硬编码」  `目前的css也存在变量`
+将变量放入：root中以便全局使用，变量命名之前采用--前缀，采用var函数使用。
+<style>
+    :root {
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+        --font-size: 16px;
+    }
+    body {
+        color: var(--primary-color);
+        font-size: var(--font-size);
+    }
+    h1 {
+        color: var(--secondary-color);
+    }
+    .custom {
+        --primary-color: #e74c3c; /* Override variable locally */
+        color: var(--primary-color);
+    }
+</style>
+
+less声明的变量必须以`@`开头，后面紧跟变量名和变量值，而且变量名和变量值需要使用冒号:分隔开
+@red: #c00;
+strong {
+  color: @red;
+}
+sass声明的变量跟less十分的相似，只是变量名前面使用`$`开头
+$red: #c00;
+strong {
+  color: $red;
+}
+stylus声明的变量没有任何的限定，可以使用$开头，结尾的分号;可有可无，但变量与变量值之间需要使用=
+在stylus中我们不建议使用@符号开头声明变量
+red = #c00
+strong
+  color: red
+
+`作用域：`
+Css 预编译器把变量赋予作用域，也就是存在生命周期。就像 js 一样，它会先从局部作用域查找变量，依次向上级作用域查找。
+`Sass变量作用域分为局部和全局。默认情况下，变量在定义它的作用域内有效。`
+$global-color: #3498db;
+.component {
+  $local-color: #e74c3c;
+  color: $local-color;
+}
+`混合`
+sass使用 `@mixin 和 @include`定义和调用混合。
+@mixin mixin-example {
+  color: #3498db;
+  font-size: 16px;
+}
+.component {
+  @include mixin-example;
+}
+
+less使用`.`定义混合，直接调用`函数定义和使用,可以传递参数`
+.mixin-example(@color: red) {
+  color: #3498db;
+  font-size: 16px;
+  color:@color
+}
+.component {
+  .mixin-example();
+}
+
+Stylus使用函数定义和调用混合。
+mixin-example()
+  color #3498db
+  font-size 16px
+.component
+  mixin-example()
+
+`嵌套：`
+CSS本身不支持嵌套，但可以通过后代选择器实现有限的嵌套效果。
+.parent .child {
+  color: #3498db;
+}
+sass，less和`stylus（不需要括号和分号）`都支持嵌套
+.parent {
+  .child {
+    color: #3498db;
+  }
+}
+`代码模块化：`
+css:使用 @import 导入多个CSS文件，但在性能上不如预处理器的导入机制。@import url('styles.css');
+
+
+`总结：`
+CSS: 原生支持变量、自定义属性、和部分的模块化功能。嵌套和混合功能有限。
+Sass: 功能强大，支持变量、嵌套、混合、模块化，适合大型项目。
+Less: 类似于Sass，语法简洁，功能全面。
+Stylus: 语法最简洁，支持变量、嵌套、混合、模块化，灵活性高。
+
+`补充：scss相对于css的优势，scss类似css，sass不用{}`
+1.变量：css语法更为繁琐
+2.嵌套：CSS目前不支持嵌套，需要手动`编写选择器`。
+3.混合: CSS没有内置的混合功能，scss支持强大的混合功能，可以带参数(@maxin,@include)
+4.继承: CSS没有直接的继承功能,支持继承，减少重复代码(@extend)
+5.运算: CSS支持部分运算(calc)，但不如SCSS灵活。 width: 100% - 20px; padding: 10px / 2;
+6.导入：支持@import，但会产生多个HTTP请求，影响性能,scss支持@import，在编译时合并为一个文件
+7.模块系统：CSS没有模块系统，所有变量都是全局的。支持模块系统@use和@forward，更好地管理和组织代码。
+8.条件循环：CSS没有条件和循环功能，需要借助JavaScript。scss支持条件语句和循环，使样式更具动态性
+@mixin theme($theme-name) {
+  @if $theme-name == dark {
+    background: black;
+    color: white;
+  } @else if $theme-name == light {
+    background: white;
+    color: black;
+  }
+}
+body { @include theme(dark); }
+9.SCSS有强大的社区和生态系统，提供了许多工具和库（如Compass、Bourbon），使开发更加高效。
+
+`补充：@extend，@use,@forward的用法`
+@extend：继承，用于在多个选择器之间共享样式，避免重复代码。
+.message {
+  border-color: #d6e9c6;
+}
+.error {
+  @extend .message;
+  border-color: #ebccd1;
+}
+@use：用于导入另一个Sass文件中的变量、函数和mixin，并且使用`命名空间`来访问它们,一般配合@forward使用。
+
+
+## css如何画一个三角形，原理是什么？
+`主要还是利用border属性，当div不具有宽度和高度时，四个边框都是三角形，隐藏其它三个三角形即可（border-color：transparent），注意需要显示边框border-style：solid`
+`当只存在相邻两个边框时，且div的宽高为0，矩形是由两个三角形组成的，隐藏其中一个即可`
+.border {
+    width: 0;
+    height: 0;
+    border-style:solid;
+    border-width: 0 50px 50px;
+    border-color: transparent transparent #d9534f;
+}
+.box {
+    /* 内部大小 */
+    width: 0px;
+    height: 0px;
+    /* 边框大小 只设置两条边*/
+    border-top: #4285f4 solid;
+    border-right: transparent solid;
+    border-width: 85px; 
+    /* 其他设置 */
+    margin: 50px;
+}
+
+## 让Chrome支持小于12px 的文字方式有哪些？区别？
+客户端：用户可以直接在客户端chrome://settings/languages里面修改
+服务端：
+一、zoom：将字体大小缩放为0.8倍，这需要考虑兼容性
+.span1{
+    font-size: 12px;
+    display: inline-block;
+    zoom: 0.8;
+}
+二、-webkit-transform:scale() 针对chrome浏览器,加webkit前缀，用transform:scale()这个属性进行放缩
+注意的是，使用scale属性只对可以定义宽高的元素生效，所以，下面代码中将span元素转为行内块元素
+.span1{
+    font-size: 12px;
+    display: inline-block;
+    -webkit-transform:scale(0.8);
+}
+
+## 如何使用css完成视差滚动效果?
+
+## CSS3新增了哪些新特性？
+1、选择器：主要增加了属性选择器和伪类选择器（:nth-child(2),:last:child）
+2、新样式：border-radius：创建圆角边框，box-shadow：为元素添加阴影，border-image：使用图片来绘制边框
+3、媒体查询：@media
+4、flex和grid布局
+5、文字：word-wrap 是否换行，text-overflow文本溢出 clip,ellopsis裁剪或者省略号代替，text-shadow 文本阴影
+6、颜色：rgba(),rgb+a透明度
+7、增加了一些动画的效果：transition，transform，animation，linear-gradient：线性渐变，radial-gradient：径向渐变
+
+选择器，边框，背景，文字，颜色，transition，transform，animation，渐变
+
+## css3动画有哪些？
+
+## 说说设备像素、css像素、设备独立像素dip、dpr、ppi 之间的区别？
+css像素：在没有缩放的情况下，1css像素等于1个设备独立像素
+在同一个设备上，每1个 CSS 像素所代表的设备像素是可以变化的（比如调整屏幕的分辨率）
+在不同的设备之间，每1个 CSS 像素所代表的设备像素是可以变化的（比如两个不同型号的手机）
+`可以把css单位认为是一个虚拟相对的单位，不同的显示器css表示的设备像素是不一定的。`
+
+设备像素：指设备能控制显示的最小物理单位。屏幕生产之后设备像素就是一个固定值，单位pt。和分辨率挂钩
+`一个1080p的显示器分辨率是1920x1080，意味着它有1920个水平设备像素和1080个垂直设备像素。当我们调整分辨率时，屏幕显示的宽度和高度会变化，而不是清晰度。`
+
+`DIP(设备独立像素)`：与设备无关的逻辑像素，代表可以通过程序控制使用的`虚拟像素`，是一个总体概念，包括了CSS像素`（分辨率）`:设备独立像素包括了css像素
+
+`DPR(设备像素比)`:设备像素和CSS像素之间的比例关系，`表示一个CSS像素包含多少个设备像素`.
+DPR=设备像素/css像素   `对于一个DPR为2的设备来说，一个CSS像素对应2x2的设备像素矩阵，也就是4个设备像素。`
+1080 1920分辨率对应的css像素为540px和960px
+
+PPI:每英寸像素，表示每英寸包含的像素点的数目，可以理解为像素密度，数值越高，说明屏幕显示的图像越清晰。
+屏幕分辨率：X  Y
+PPI = 根号（X的平方+Y的平方）除以屏幕尺寸
+
+1、无缩放情况下，1个CSS像素等于1个设备独立像素
+2、设备像素由屏幕生产之后就不发生改变，而设备独立像素是一个虚拟单位会发生改变
+3、PC端中，1个设备独立像素 = 1个设备像素 （在100%，未缩放的情况下）
+4、在移动端中，标准屏幕（160ppi）下 1个设备独立像素 = 1个设备像素
+5、设备像素比（dpr） = 设备像素 / 设备独立像素
+6、每英寸像素（ppi），值越大，图像越清晰
+
+`补充：由于pc端的宽高不一致，设置px会出现适配问题`（）
+响应式设计:是一种网络页面设计布局，页面的设计与开发应当根据`用户行为以及设备环境`(系统平台、屏幕尺寸、屏幕定向等)进行相应的响应和调整
+响应式设计的基本原理是通过媒体查询检测不同的设备屏幕尺寸做处理，为了处理移动端，页面头部必须有meta声明viewport
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no”>
+
+属性：
+width=device-width: 是自适应手机屏幕的尺寸宽度
+maximum-scale:是缩放比例的最大值
+inital-scale:是缩放的初始化
+user-scalable:是用户的可以缩放的操作
+
+1、使用媒体查询
+@media screen (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+}
+
+/* 适用于中等屏幕 */
+@media screen (min-width: 992px) and (max-width: 1199px) {
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+}
+
+/* 适用于小屏幕 */
+@media screen (max-width: 991px) {
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+}
+2、使用（flex，grid）布局，比如直接设置比例 flex：1
+3、百分比的设置  width：80%
+4、使用视口单位 vw,vh
+5、使用JavaScript动态调整
+6、使用em和rem单位
+7、CSS框架（如Tailwind CSS、Bulma）提供了丰富的工具类，帮助快速实现响应式设计
+
+
+
+
 
 
 

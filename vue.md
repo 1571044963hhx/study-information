@@ -1,8 +1,7 @@
 ## 说说你对 vue 的理解?
+Vue.js是一个用于创建用户界面的开源 JavaScript 框架，也是一个`创建单页应用的 Web 应用框架.`
 
-Vue.js（/vjuː/，或简称为 Vue）是一个用于创建用户界面的开源 JavaScript 框架，也是一个创建单页应用的 Web 应用框架.
-
-核心特性：数据驱动模型（MVVM）
+`核心特性：数据驱动模型（MVVM）`
 Model:模型层，应用的数据及业务逻辑
 View：视图层：负责将数据模型转化为 UI 展示出来，可以简单的理解为 HTML 页面
 ViewModel：视图模型层，用来连接 Model 和 View，是 Model 和 View 之间的通信桥梁
@@ -58,7 +57,6 @@ Vue 所有界面的变动，都是根据数据自动绑定出来的，Jquery 操
 diff 算法不同。react 主要使用 diff 队列保存需要更新哪些 DOM，得到 patch 树，再统一操作批量更新 DOM。Vue 使用双向指针，边对比，边更新 DOM
 
 ## vue2 和 vue3 的对比（vue 的响应式原理是什么？vue3 的响应式有何不同）
-
 1、vue3 在兼顾 vue2 的 options API 的同时还推出了 composition API，大大增加了代码的逻辑组织和代码复用能力
 2、Vue3 是基于 typeScript 编写的，提供了更好的类型检查，能支持复杂的类型推导
 3、在 vue2 中，我们是通过 mixin 实现功能混合（app.mixin），如果多个 mixin 混合，会存在两个非常明显的问题：命名冲突和数据来源不清晰，而通过 composition 这种形式，可以将一些复用的代码抽离出来作为一个函数，只要的使用的地方直接进行调用即可。
@@ -66,10 +64,10 @@ diff 算法不同。react 主要使用 diff 队列保存需要更新哪些 DOM�
 6、生命周期改变（）
 7、vue3 中 v-if 的优先级高于 v-for
 8、根实例的创建从 new app 变为了 createApp
-9、新增了了传送门 teleport 组件：可以将组件的 DOM 结构渲染到指定的目标位置。（一般用于模态对话框，将组件显示在BODY的中间，而不是父组件的中间位置）
+9、新增了了传送门 `teleport` 组件：可以将组件的 DOM 结构渲染到指定的目标位置。（一般用于模态对话框，将组件显示在BODY的中间，而不是父组件的中间位置）
 10、更小的体积：通过更好的代码分割和 Tree Shaking，使得打包后的体积更小。
 11、基于 Proxy 的响应式系统：使用 Proxy 替代 Vue 2.x 中的 Object.defineProperty，解决了 Vue 2.x 中的一些局限性，如无法检测数组索引的变化和对象属性的添加和删除。
-12、引入 Suspense 组件，可以更好地处理异步组件的加载。有两个默认插槽 <#default>展示需要展示的内容，<#fallback>展示在加载完成之前需要展示的内容，比如骨架屏（vue-content-loader）
+12、引入 `Suspense` 组件，可以更好地处理异步组件的加载。有两个默认插槽 <#default>展示需要展示的内容，<#fallback>展示在加载完成之前需要展示的内容，比如骨架屏（vue-content-loader）
 
 
 
@@ -80,42 +78,46 @@ vue.defineProperty(person，"age",{value:18,enumerable:true,writable:true,config
 
 通过 vm 对象来代理 data 对象中属性的操作（读，写）
 优势：更加方便的操作 data 中的数据
-基本原理：通过 object.defineProperty()把 data 对象中所有的属性添加到 vm 上，为每一个 vm 上的属性都指定一个 getter 和 setter，在 getter 和 setter 中去操作 data 中对应的属性。
 
-setter-重新解析模板-生成新的虚拟 dom-新旧 dom 对比-更新页面
-总结：vue 将 data 中的数据先加工（做成响应式数据，getter，setter），再保存在实例对象的\_data 中，此时模板解析可以{{_data.name}}来使用，但不方便，
-因此此处做了一个数据代理，将\_data.name 变为 vm.name.基本在于模板中可以直接使用 vue 实例对象的属性。
+`基本原理：通过 object.defineProperty()把 data 对象中所有的属性添加到 vm 上，为每一个 vm 上的属性都指定一个 getter 和 setter，在 getter 和 setter 中去操作 data 中对应的属性。`
+`setter-重新解析模板-生成新的虚拟 dom-新旧 dom 对比-更新页面`
+
+总结：vue 将 data 中的数据先加工（做成响应式数据，getter，setter），再保存在实例对象的_data 中，此时模板解析可以{{_data.name}}来使用，但不方便，
+因此此处做了一个数据代理，将_data.name 变为 vm.name.基本在于模板中可以直接使用 vue 实例对象的属性。
 
 数据劫持：数据劫持是指在访问或修改对象的属性时，对这些操作进行拦截和监视，以便在属性发生变化时能够触发相关的操作。在 Vue 中，数据劫持用于监听数据的变化，以实现双向绑定和响应式更新
-比较典型的有两种方式 object.defineProperty（） 和 es2015 中新增的 proxy 对象 。数据的劫持最著名的应用当属双向绑定。
+比较典型的有两种方式 object.defineProperty（） 和 es2015 中新增的 proxy 对象。数据的劫持最著名的应用当属双向绑定。
 
 需要对每个属性进行遍历监听，如果嵌套对象，需要深层监听，造成性能问题
 但此处存在一个问题，使用 vue.defineProperty 数据代理是一个对象时，当对它进行新增和修改不会引起内存地址的变化，并不会检测到该属性发生了变化。
 
-1.Proxy 性能优于 Object.defineProperty。 Proxy 代理的是整个对象，Object.defineProperty 只代理对象上的某个属性,如果是多层嵌套的数据需要循环递归绑定; 2.对象上定义新属性时，Proxy 可以监听到，Object.defineProperty 监听不到，需要借助$set 方法; 3.数组的某些方法(push、unshift 和 splice)Object.defineProperty 监听不到，Proxy 可以监听到;
+`1.Proxy 性能优于 Object.defineProperty。 Proxy代理的是整个对象，Object.defineProperty只代理对象上的某个属性,如果是多层嵌套的数据需要循环递归绑定; `
+`2.对象上定义新属性时，Proxy可以监听到，Object.defineProperty 监听不到，需要借助$set 方法;` 
+`3.数组的某些方法(push、unshift 和 splice)Object.defineProperty 监听不到，Proxy 可以监听到;`
 
-function \_isObserve(v) {
-return typeof v === 'object' && v !== null
+function _isObserve(v) {
+    return typeof v === 'object' && v !== null
 }
+
 function Observe(obj) {
     const proxy = new Proxy(obj, {
         get(target, k) {
-        let v = target[k];
-        if (\_isObserve(v)) {
-            v = Observe(v)
+            let v = target[k];
+            if (_isObserve(v)) {
+                v = Observe(v)
+            }
+            console.log(k,'读取')
+            return v
+        },
+        set(target,k,val){
+            if(target[k] !==val){
+                target[k] = val
+                console.log(k,'更改')
+            }
         }
-        console.log(k,'读取')
-        return v
-    },
-set(target,k,val){
-if(target[k] !==val){
-target[k] = val
-console.log(k,'更改')
-}
-}
-//在此后面可以加很多函数
-})
-return proxy
+    //在此后面可以加很多函数
+    })
+    return proxy
 }
 
 target：要代理的目标对象，可以是任何类型的对象（包括数组、函数等）。
@@ -130,46 +132,45 @@ handler：一个对象，其属性是当执行某种操作时定义代理行为�
 4、数据变更检测：当数据被修改时，会触发数据的 setter。Vue.js 会在 setter 中通知所有依赖该数据的观察者，执行更新操作。
 
 ## setTimeout 实现 setInterval
-
 function myInterval(fn, time) {
-let context = this;
-setTimeout(() => {
-fn.call(context);
-myInterval(fn, time);
-}, time);
+    let context = this;
+    setTimeout(() => {
+        fn.call(context);
+        myInterval(fn, time);
+    }, time);
 }
 `思路：定时器递归，注意保留this，防止this丢失`
 
 ## 实现 proxy
-
 function MyProxy(obj, handler) {
-let \_target = deepClone(obj);
-Object.keys(\_target).forEach(key => {
-Object.defineProperty(\_target, key, {
-get: () => handler.get && handler.get(obj, key), //当 handler.get 存在时执行下一步
-set: newVal => handler.set && handler.set(obj, key, newVal),
-});
-});
-return \_target;
+    let _target = deepClone(obj);
+    Object.keys(_target).forEach(key => {
+        Object.defineProperty(_target, key, {
+            get: () => handler.get && handler.get(obj, key), //当 handler.get 存在时执行下一步
+            set: newVal => handler.set && handler.set(obj, key, newVal),
+        });
+    });
+    return _target;
 }
 
 let person = {
-name: 'jack',
-city: 'Beijing',
+    name: 'jack',
+    city: 'Beijing',
 };
 
-let \_target = {
-name: 'jack',
-city: 'Beijing',
+let _target = {
+    name: 'jack',
+    city: 'Beijing',
 };
 
 let proxy = new MyProxy(person, {
-get: (target, propKey) => {
-console.log('读取')
-return target[propKey]},
-set: (target, propKey, value) => {
-target[propKey] = value;
-},
+    get: (target, propKey) => {
+        console.log('读取')
+        return target[propKey]
+    },
+    set: (target, propKey, value) => {
+        target[propKey] = value;
+    },
 });
 
 // test
@@ -231,7 +232,6 @@ const curried = curry(sum);
 console.log(curried(1)(2)(3)(4)(5)) // 6
 
 ## 跨域（浏览器同源策略）当两个 URL 的协议，域名，端口任何一方存在不同时，就不能相互通信
-
 1、jsonp 利用 script 标签进行跨域，只能处理 get 请求
 2、后端设置 Access-Control-Allow-Origin cors
 3、proxy 可以在 vue.config,js 中配置和在 express 服务器中设置。
@@ -245,25 +245,25 @@ console.log(curried(1)(2)(3)(4)(5)) // 6
 组件：一组 DOM 元素的封装
 
 const vsnode = {
-tag:'h1',
-props:{
-onClick:handler
-},
-children:[
-{tag:'span'}
-]
+    tag:'h1',
+    props:{
+        onClick:handler
+    },
+    children:[
+        {tag:'span'}
+    ]
 }
 
 <h1 @click="handler"><span></span></h1>
 
 function MyComponent(){
-return {
-tag:'div',
-props:{
-onClick:()=>alert('hello')
-},
-children:'click me!'  
- }
+    return {
+        tag:'div',
+        props:{
+            onClick:()=>alert('hello')
+        },
+        children:'click me!'  
+    }
 }
 
 `vue渲染的原理（模板的工作原理）：首先将模板里的内容通过编译器编译成渲染函数并添加到<script>标签块的组件对象上，然后渲染器再把渲染函数返回的虚拟DOM渲染为真实的DOM`
@@ -282,7 +282,7 @@ children:'click me!'
 
 `Diff 算法 用于比较新的虚拟 DOM 和旧的虚拟 DOM，找出变化部分，并进行最小化的 DOM 更新。`
 
-1、分层比较：比较两个虚拟 DOM 树时，算法会逐层进行比较，而不是逐节点进行比较。这样可以减少比较的复杂度。
+1、分层比较：比较两个虚拟DOM树时，算法会逐层进行比较，而不是逐节点进行比较。这样可以减少比较的复杂度。
 2、同级比较：只会比较同一层级的节点，不会跨层级进行比较。
 3、关键节点（Keyed Nodes）：通过 key 属性来唯一标识节点，从而优化节点移动和复用的情况。
 
@@ -315,8 +315,8 @@ Diff 算法的优点
 没有 key:A=A,B=B,C!=F,D!=C,E!=D 因此将 C,D,E 节点删除，新增节点 F,C,D,E
 有 key:A=A，B=B,C=C,D=D,E=E 新增节点 F 提高效率。
 
-如果节点类型不同，直接干掉前面的节点，再创建并插入新的节点，不会再比较这个节点以后的子节点了。
-如果节点类型相同，则会重新设置该节点的属性，从而实现节点的更新。
+`如果节点类型不同，直接干掉前面的节点，再创建并插入新的节点，不会再比较这个节点以后的子节点了。`
+`如果节点类型相同，则会重新设置该节点的属性，从而实现节点的更新。`
 
 需要注意的是，key 属性必须是稳定且唯一的标识符，通常可以使用列表项的唯一标识符（如 id），或者使用索引作为 key（不推荐，除非列表项目没有唯一标识符）。
 `当数组重新排序或者增加和删除时索引会发生变化，因此索引不能够充当唯一标识符`
@@ -368,7 +368,7 @@ errorCaptured --------> onErrorCaptured(()=>{})当捕获一个来自子孙组件
 
 ## v-if 和 v-show 的区别（为什么 Vue 中的 v-if 和 v-for 不建议一起用?）
 v-if：创建和删除 dom 节点
-v-show：只是通过 display：none 隐藏起来
+v-show：只是通过 display：none 隐藏起来 `回流`
 
 初次加载（加载次数很少的时候）：v-if（比如当我鼠标移上去的时候才加载，有时候可能始终没有移上去，就不需要加载了） v-show 频繁切换
 
@@ -376,7 +376,6 @@ vue2 中：v-if 的优先级低于 v-for 先循环再逻辑判断，但当 v-if 
 vue3 中：v-if 高于 v-for
 
 ## keep-alive 的常用属性和实现原理（怎么缓存当前的组件？缓存后怎么更新？说说你对 keep-alive 的理解是什么？） react 如何做到和 vue 中 keep-alive 的缓存效果
-
 keep-alive 可以实现组件缓存，当组件切换时不会对当前组件进行卸载，可用于保存状态，比如输入框的值。（路由的切换，回到鼠标滚动条的位置）
 常用的两个属性 include/exclude，允许组件有条件的进行缓存。此时需要给组件指定 name 属性 max 属性：最大储存组件个数，超过个数最久访问的被移除。
 onActivated(() => {
@@ -423,7 +422,6 @@ React 组件有两种主要方式：函数组件和类组件。在类组件中�
 ## vue 和 react 的区别
 
 ## 说一下 watch，computed，method 的区别？以及使用场景
-
 computed：计算`属性`,具备缓存功能，当依赖的值没有变化时，一直保留原有的值。最开始会返回一个值（不管是否发生变化） 计算总价
 method：没有缓存
 watch:监听，只有当数据发生变化时才会执行，一般用于执行副作用，如异步获取数据等
@@ -486,7 +484,6 @@ PWA
 
 
 ## vue 中 spa 应用如何优化首屏加载速度（SPA（单页应用）首屏加载速度慢怎么解决?）
-
 1、按需加载（异步组件） 只有当组件需要渲染的时候再加载，比如当点击按钮时显示
 import AsyncComp from './components/MyComponent.vue' =>同步加载
 const AsyncComp = defineAsyncComponent(() => =>异步加载
@@ -508,13 +505,12 @@ import('./components/MyComponent.vue')
 
 
 ## ref 的作用
-
 1、ref 的作用是被用来给元素或子组件注册引用信息。引用信息将会注册在父组件的 $refs 对象上。其特点是：
 
 如果在普通的 DOM 元素上使用，引用指向的就是 DOM 元素
 如果用在子组件上，引用就指向组件实例
 
-直接赋值使用 ref（不管基本还是对象）,修改数据 ref 和 reactive 都可以，当是对象时，本质上 ref 就是通过调用 reactive 来实现的。
+直接赋值使用ref不管基本还是对象,修改数据 ref 和 reactive 都可以，当是对象时，本质上 ref 就是通过调用 reactive 来实现的。
 
 shallowRef：放弃深层次的响应式
 shallowReactive:
@@ -528,7 +524,6 @@ https://www.bilibili.com/video/BV1cC411b76D/?spm_id_from=333.337.search-card.all
 
 
 ## 说说对 nexttick 的理解
-
 等待下一次 DOM 更新刷新的工具方法。
 
 当你在 Vue 中更改响应式状态时，最终的 DOM 更新并不是同步生效的，而是由 Vue 将它们缓存在一个队列中，直到下一个“tick”才一起执行。这样是为了确保每个组件无论发生多少状态改变，都仅执行一次更新。
@@ -579,7 +574,6 @@ vue3 通过 new proxy 设置数据为响应式，因此界面会刷新。
 ## Vue 项目如何部署？有遇到布署服务器后刷新 404 问题吗？
 
 ## 你是怎么处理 vue 项目中的错误的？
-
 后端接口错误：通过响应拦截器进行拦截，服务端的响应码 4 开头
 代码中本身逻辑错误：
 
@@ -599,7 +593,6 @@ vue3 通过 new proxy 设置数据为响应式，因此界面会刷新。
 8、整个挂载过程是 Vue 实例从开始创建到最终渲染完成的过程，它作为 Vue 的生命周期的一个部分，确保了组件按照既定的方式被正确编译和渲染到页面上。
 
 ## Vue3.0 所采用的 Composition Api 与 Vue2.x 使用的 Options Api 有什么不同？
-
 1、在逻辑组织和逻辑复用方面，Composition API 是优于 Options API
 2、因为 Composition API 几乎是函数，会有更好的类型推断（更支持 typescript）。
 3、Composition API 对 tree-shaking（webpack） 友好，代码也更容易压缩
@@ -700,5 +693,8 @@ formData.append('username', 'exampleUser'); // 添加其他数据（我个人没
 
 计算哈希值：增量算法：由于大文件上传的文件过大，计算文件的哈希值需要拿到文件的所有数据才能计算，因此考虑增量算法
 先拿到一部分数据计算哈希值，删除相对应的数据，再拿到下一部分的数据和前一部分的哈希值一起计算得到新的哈希值。
+
+
+
 
 
