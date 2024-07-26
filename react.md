@@ -1,12 +1,11 @@
 ## 说说对 React 的理解？有哪些特性？
-
 组件化的开发模式，不错的性能
 丰富的生态，跨平台支持
 
 ## 说说 React 生命周期有哪些不同阶段？每个阶段对应的方法是？
 
 ## 使用
-npx create-react-app react-basic
+npx create-react-app react-basic   [在vscode终端中创建]
 渲染过程：index.js=>渲染的入口 app.js=>根组件 =>index.html 中的 root 节点中。
 
 ## 什么是 JSX（javascript 和 xml<html>的缩写），表示在 js 代码中编写 HTML 的模板结构，是 React 中编写 UI 模板的方式。
@@ -88,6 +87,13 @@ useEffect(()=>{
 },[])  =>官网文档
 副作用：的是那些影响到组件之外的操作，例如，数据获取，dom操作，打印日志，定时器等
 
+useEffect：在浏览器绘制后异步执行`肯定在DOM更新之后`，适用于大多数副作用。  `它不会阻塞浏览器的渲染。适合那些不需要立即影响布局的副作用操作。`
+useLayoutEffect：在 DOM 更新后`浏览器绘制之前`、浏览器绘制之前同步执行，适用于需要布局测量或 DOM 操作的副作用。`可以阻止闪烁，但是同步执行，会阻止浏览器的渲染。`
+
+测量 DOM 尺寸：获取和操作元素的尺寸或位置（例如，设置一个动态宽度或高度。
+同步动画：在浏览器绘制前完成 DOM 相关的动画设置，以避免视觉上的抖动或不稳定。
+`MutationObserver 是一个原生的 JavaScript API，用于监视 DOM 的变动。你可以用它来监听某个 DOM 元素的变动，并在变动发生后执行代码。`
+
 useContext：组件通信（爷孙）
 useRef：获取组件dom结构 
 <第一步：const inputRef = useRef(null)
@@ -141,6 +147,21 @@ hooks的出现，使函数组件的功能得到了扩充，拥有了类组件相
 redux Toolkit:编写redux逻辑的方式，简化书写方式
 react-redux:连接redux和react的中间件
 
+单一数据源：整个应用的状态存储在一个集中式的 store 中。
+不可变数据：状态是不可变的，状态的每次更新都会返回一个新的状态对象。
+纯函数：所有的状态更新逻辑都在纯函数（reducers）中处理。
+Middleware：支持 middleware 来处理异步逻辑或其他副作用（如 redux-thunk, redux-saga）。
+
+优势
+强大的中间件支持：Redux 有成熟的中间件系统，允许处理异步操作、日志记录、错误处理等。例如，redux-thunk 和 redux-saga 提供了强大的异步处理能力。
+开发者工具：Redux DevTools 是一个强大的调试工具，允许你查看状态变化、回溯操作、时间旅行调试等。
+社区支持：Redux 有一个庞大且活跃的社区，提供了大量的教程、插件和最佳实践。
+中立性：可以与任何 JavaScript 框架或库一起使用，而不仅仅是 React。
+适用场景
+复杂的大型应用程序，尤其是当需要复杂的状态管理和强大的调试工具时。
+需要跨多个组件和层级共享状态的应用程序。
+需要处理大量异步操作或需要复杂的中间件配置时。
+
 核心概念
 1、Store：存储应用的整个状态树。应用中只能有一个 Store。
 2、State：存储在 Store 中的状态。应用的整个状态树以一个对象的形式存储在 State 中。
@@ -149,9 +170,13 @@ react-redux:连接redux和react的中间件
 5、Dispatch：发送 Action 的唯一方法。调用 store.dispatch(action) 将 Action 发送给 Reducer。
 6、Subscribe：注册一个回调函数，当 State 发生变化时，会调用这个回调函数
 
-1、单一数据源
+1、单一数据源   
 2、state 是只读的
 3、使用纯函数来执行修改
+<!-- 可以理解为单向数据流 -->
+1、清晰的数据流动路径
+2、易于调试和维护
+3、数据的一致性和预测性
 
 1、createStore可以帮助创建 store
 2、store.dispatch 帮助派发 action , action 会传递给 store
@@ -160,11 +185,7 @@ react-redux:连接redux和react的中间件
 
 `中间件：主要用于异步操作处理。（对store.dispatch进行改造处理）=>类似于拦截器的思想，同步执行在纯reducer函数中执行。`在 Redux 中，中间件是用于拦截和处理 actions 的函数，允许在 action 发送到 reducer 之前对其进行处理、修改或添加额外的逻辑。
 
-## vue-router
-CRA创建项目？
-
-
-## 说说你对React Router的理解？常用的Router组件有哪些？
+## 说说你对React Router的理解？常用的Router组件有哪些？(是什么？有哪些？参数传递？)
 
 react-router等前端路由的原理大致相同，可以实现无刷新的条件下切换显示不同的页面
 
@@ -174,15 +195,16 @@ react-router等前端路由的原理大致相同，可以实现无刷新的条�
 react-router主要分成了几个不同的包：
 
 react-router: 实现了路由的核心功能
-react-router-dom： 基于 react-router，加入了在浏览器运行环境下的一些功能
+react-router-dom： 基于 react-router，加入了在`浏览器`运行环境下的一些功能
 react-router-native：基于 react-router，加入了 react-native 运行环境下的一些功能
 react-router-config: 用于配置静态路由的工具库
 
-BrowserRouter、HashRouter 一般导入BrowserRouter会重命名为router  <Router>包裹Route使用，但一般不会这么使用，使用createBrowserRouter
-Route:用于路径的匹配，然后进行组件的渲染，对应的属性如下：path,component,render,exact开启精准匹配，只有精准匹配到完全一致的路径，才会渲染对应的组件
-Link、NavLink:NavLink作用和link一样，只是添加了一些样式activeStyle：活跃时（匹配时）的样式activeClassName={{color:"red"}}：活跃时添加的class
+BrowserRouter、HashRouter 一般导入BrowserRouter会重命名为router  <Router>包裹Route使用，但一般不会这么使用，使用createBrowserRouter:Router中包含了对路径改变的监听，并且会将相应的路径传递给子组件.
+Route:用于路径的匹配，然后进行组件的渲染，对应的属性如下：path,component,render,`exact开启精准匹配，只有精准匹配到完全一致的路径，才会渲染对应的组件`
+Link、NavLink:NavLink作用和link一样，只是添加了一些样式activeStyle：活跃时（匹配时）的样式activeClassName={{color:"red"}}：活跃时添加的class,最终会被渲染成a元素，其中属性to代替a标题的href属性.
 switch：组件的作用适用于当匹配到第一个组件的时候，后面的组件就不应该继续匹配
 redirect:重定向
+
 
 路径语法：
 <Route path="/hello/:name">         // 匹配 /hello/michael 和 /hello/ryan
@@ -197,14 +219,82 @@ redirect:重定向
 2、hashHistory：
 3、createMemoryHistory：用于特殊的内存管理或测试需求，并且不会对浏览器 URL 产生影响。
 
+ useHistory:提供了访问和操作浏览器历史记录的能力。这允许你进行编程式导航，即在代码中控制路由跳转。
+ `注意: useHistory 在 React Router v6 中被移除，取而代之的是 useNavigate。`
+useParams:`useParams 允许你访问当前 URL 的路由参数。这对于获取动态路由中的参数（例如，/users/:userId）非常有用。`
+使用 useParams 获取一个包含 URL 参数的对象。参数的名称与路由定义中的占位符一致。
+useLocation:useLocation 允许你访问当前的 URL 信息，包括路径、查询字符串和哈希部分。它对于处理基于位置的逻辑非常有用。
+
+参数传递的四种方式
+1、路径参数： <Route path="/user/:userId" element={<UserProfile />} />  `useParams()`可以获得该参数    `vue中使用useRoute()`
+优势：清晰、便于 SEO。
+缺点：灵活性较低，复杂参数难处理。    <Route path="/hello/:name">   // 匹配 /hello/michael 和 /hello/ryan
+
+2、查询参数：在URL地址的末尾，可以通过组件中的 `useSearchParams()` 钩子获取参数值。 <Route path="/user" element={<UserProfile />} />
+优势：灵活、适合可选参数和多个参数。
+缺点：不适合 SEO，URL可能冗长。 http://example.com/path?key1=value1&key2=value2   `navigate('/user?name=zhangsan&key=1123');`
+
+3、状态参数：可以通过导航函数传递，用于在页面跳转时传递复杂的数据对象。<Route path="/" element={<Link to="/user" state={{ userId: '123' }}>Go to User Profile</Link>}/>
+优势：适合传递复杂数据，不暴露在 URL 中。
+缺点：页面刷新时会丢失，不能用于书签和共享 URL,`直接刷入地址时不会传递参数`,可以理解为只有当点击了link标签才能传递参数。  `useLocation()`获取参数
+`navigate('/user', { state: { userId: '123' } });`
+
+4、上下文参数：使用 React 的 Context API 在组件树中传递参数，适合全局共享的状态（在根组件设置的话）,参数只能在子组件中使用。
+    <UserContext.Provider value={{ userId: '123' }}>
+      <Routes>
+        <Route path="/user" element={<UserProfile />} />
+      </Routes>
+    </UserContext.Provider>   子组件通过`useContext()`获得参数。
+
+`vue中传递参数的方式：`
+1、路径参数
+2、查询参数： this.$router.push({ path: '/user', query: { name: 'zhangsan', key: '1123' } });
+3、路由元信息：
+const routes = [
+  {
+    path: '/user',
+    component: UserProfile,
+    meta: { requiresAuth: true }
+  }
+];   三种都是通过useroute()获取参数
+
+参数传递方式：
+Vue Router 和 React Router 都支持路由参数和查询参数，但 React Router 还支持通过状态参数传递数据。
+Vue Router 通过 route.query 和 route.params 访问参数，而 React Router 通过 useLocation 和 useParams 访问。
+使用方式：
+Vue Router 通常在路由配置和组件中使用 useRoute 钩子来访问参数。
+React Router 则使用 useLocation 和 useParams 钩子来访问查询参数和路由参数。
+状态参数：
+React Router 支持通过 state 参数在导航中传递数据，适用于临时数据传递。
+Vue Router 不直接支持状态参数，但可以通过 query 或其他方法实现类似功能。
+
 
 ## 说说React Router有几种模式？实现原理？
-hash 模式：在url后面加上#，如http://127.0.0.1:5500/home/#/page1 =>hashHistory：  不需要  兼容性好，支持老版本浏览器。
-history 模式：允许操作浏览器的曾经在标签页或者框架里访问的会话历史记录 =>browserHistory：  需要
+Hash:
+工作原理：#后面的部分表示路由，浏览器不会向服务器发送hash部分的数据。当hash部分发生变化时，HashRouter 会解析新的 hash 值并渲染相应的组件。它会监听 hash 变化（window.location.hash）来更新路由状态。
+优点
+1、兼容性: HashRouter 不依赖于 HTML5 History API，因此在所有现代浏览器以及较老的浏览器中都能正常工作。
+2、无需服务器配置: 由于 hash 部分不会被发送到服务器，因此`不需要对服务器进行额外配置来处理路径重写。`
+3、简单性: 实现简单，适合不需要复杂 URL 处理的应用。
+缺点
+1、URL 可读性: 使用 hash 的 URL 不如传统 URL 可读。例如，http://example.com/#/path/to/page 看起来不如 http://example.com/path/to/page 直观。
+2、SEO 支持: Hash-based URLs 对搜索引擎的支持较差，因为 hash 部分不会被发送到服务器，搜索引擎爬虫可能无法有效索引这些 URL。
 
-`hash 值改变，触发全局 window 对象上的 hashchange 事件。`
-`所以 hash 模式路由就是利用 hashchange 事件监听 URL 的变化，从而进行 DOM 操作来模拟页面跳转`
-history 
+BrowserRouter
+工作原理：BrowserRouter 使用 HTML5 的 History API（history.pushState 和 history.replaceState）来管理路由。它能够使用标准的 URL 路径，例如 http://example.com/path/to/page。这种模式允许使用更直观和干净的 URL。在用户导航时通过 History API 改变浏览器的历史记录和 URL。它会监听 popstate 事件来更新路由状态并渲染相应的组件。
+
+优点
+URL 可读性: 使用标准的 URL 结构，使 URL 更加简洁和可读。例如，http://example.com/path/to/page 看起来更符合常规的 URL 结构。
+SEO 支持: 更好的 SEO 支持，因为 URL 的路径部分是标准的，并且可以被服务器处理和索引。
+缺点
+服务器配置: 需要服务器配置来处理所有的 URL 请求并将它们重定向到应用的入口 HTML 页面。否则，用户直接访问某个 URL 可能会导致 404 错误。
+兼容性: 虽然现代浏览器普遍支持 HTML5 History API，但在某些旧版浏览器或特定环境中可能会有兼容性问题。
+
+`举例express服务器进行路径重写：`
+`app.get('/*', (req, res) => {`
+    `res.sendFile(path.join(__dirname, 'build', 'index.html'));`
+`});`
+
 
 ## react有哪些更新
 1、并发模式
@@ -350,3 +440,23 @@ React 只会匹配相同 class 的 component（这里面的 class 指的是组�
 
 
 
+
+
+## react
+
+<body>
+    <div id='root'>
+        <h1>nihao</h1>
+    </div>
+const button = React.createElement('button',{
+    onClick:()=>{
+        console.log(1)
+    }
+},"点击")
+const div = React.createElement('div',{},button)
+type：标签的名称
+ReactDOM.createRoot('#root')  创建根容器
+
+root.render(div)  将react元素放在页面中，记住：首次调用时会将root节点中的所有元素全部替换为新创建的元素(<h1>nihao</h1>不会显示)。之后新建的元素进行diff算法对比分析
+
+</body>
