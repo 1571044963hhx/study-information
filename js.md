@@ -1,12 +1,10 @@
 ## 垃圾回收机制（内存泄漏）
-
 内存的生命周期：
 内存分配：当我们声明函数，变量等，系统会自动为他们分配内存
 内存使用：读写操作，使用变量函数
 内存回收：使用完毕，由垃圾回收机制自动收回不再使用的内存
 
 说明：全局变量一般不会回收，局部变量的值不再使用了会被自动回收掉
-
 内存泄漏：程序中分配的内存由于某种原因程序未被释放或无法释放
 
 1、栈：由操作系统自动分配释放
@@ -21,7 +19,7 @@
 
 1、当一个变量在没有使用 var, let, 或 const 关键字的情况下被声明时，它会自动成为全局变量，无法被垃圾回收器回收。
 function leak() {
-leakedVar = "I am a leaked variable"; // 应该使用 var, let 或 const
+  leakedVar = "I am a leaked variable"; // 应该使用 var, let 或 const
 }
 2、被遗忘的计时器或回调，需要清除定时器
 3、闭包
@@ -40,7 +38,6 @@ console.log(refA, 'refA'); // 解除引用
 避免循环引用，特别是在处理复杂的数据结构时
 
 ## 闭包
-
 （1）有外层函数嵌套内层函数；  
 （2）内层函数使用外层函数的局部变量；  
 （3）内层函数返回外部，并且被全局变量保存。  
@@ -57,13 +54,11 @@ const fun = outer() => fun = function inner(){}
 注意：由于全局定义了 fun = function inner(){}，所以 inner 一直存在，inner 函数使用了 i，i 一直存在。  
 
 ## 作用域和作用域链（执行上下文和执行栈的理解）
-
 全局作用域：
 局部作用域：（块级作用域、函数作用域）
 作用域链：变量查找机制，会优先查找当前作用域的变量，再逐级向上查找
 
 ## 构造函数以及 new 操作符具体的作用(##说说 new 操作符具体干了什么？)
-
 1、创建对象的三种方式：const obj = {} const obj = new Object() const obj = new OBJ()=>构造函数的方式 （class 类创建）
 2、构造函数：特殊的函数，主要用来初始化对象，可以用来创建多个类似的对象
 约定：一般 new 关键词实例化，首字母大写
@@ -77,11 +72,11 @@ new 通过构造函数 Person 创建出来的实例可以访问到构造函数�
 new 通过构造函数 Person 创建出来的实例可以访问到构造函数原型链中的属性（即实例与构造函数通过原型链连接了起来）
 
 构造函数中返回一个原始值，然而这个返回值并没有作用
-注意：构造函数如果返回值为一个对象，那么这个返回值会被正常使用（一般不返回）
+`注意：构造函数如果返回值为一个对象，那么这个返回值会被正常使用（一般不返回）`
 function Test(name) {
-this.name = name
-console.log(this) // Test { name: 'xxx' }
-return { age: 26 }
+  this.name = name
+  console.log(this) // Test { name: 'xxx' }
+  return { age: 26 }
 }
 const t = new Test('xxx')
 console.log(t) // { age: 26 }
@@ -90,13 +85,13 @@ console.log(t.name) // 'undefined'
 手写 new 操作符：
 function mynew(Func, ...args) {
 // 1.创建一个新对象
-const obj = {}
-// 2.新对象原型指向构造函数原型对象
-obj.**proto** = Func.prototype
-// 3.将构建函数的 this 指向新对象
-let result = Func.apply(obj, args) //apply 接受的参数为数组方式,如果 Func 里面包含 return 1，按照 new 关键词是没有作用，正常返回。但此处 result=1
-// 4.根据返回值判断
-return result instanceof Object ? result : obj =>  
+  const obj = {}
+  // 2.新对象原型指向构造函数原型对象
+  obj.**proto** = Func.prototype
+  // 3.将构建函数的 this 指向新对象
+  let result = Func.apply(obj, args) //apply 接受的参数为数组方式,如果 Func 里面包含 return 1，按照 new 关键词是没有作用，正常返回。但此处 result=1
+  // 4.根据返回值判断
+  return result instanceof Object ? result : obj  
 }
 
 ## 原型和原型链
@@ -107,6 +102,33 @@ return result instanceof Object ? result : obj =>
 
 Func.prototype.constructor === Func
 
+`补充：Object.create()的用法：用来创建新对象的一个方法，它允许我们指定新对象的原型（prototype），并通过可选的第二个参数直接为新对象定义属性。`提供了更灵活的原型继承方式
+const person = {
+  greet: function() {
+    console.log(`Hello, my name is ${this.name}`);
+  }
+};
+
+// 使用 Object.create 创建一个以 person 为原型的对象
+const john = Object.create(person);
+john.name = "John";
+
+john.greet(); // 输出: Hello, my name is John
+const tesla = Object.create(car, {
+  brand: {
+    value: "Tesla",
+    writable: false,
+    enumerable: true
+  },
+  model: {
+    value: "Model S",
+    writable: true,
+    enumerable: true
+  }
+});
+有点类似于Object.defineproperty
+<!-- Object.create(null) 创建一个完全没有原型的对象，不受原型链的干扰 -->
+
 ## 深浅拷贝 =>只针对引用数据类型
 
 浅拷贝：只能拷贝一层数据（展开运算符，object.assign）
@@ -114,16 +136,16 @@ object.assign(),只会将拷贝的所有属性值到新的对象中，如果属�
 深拷贝：拷贝多层数据（）
 1、递归实现
 function deepCopy(obj) {
-if (typeof obj !== 'object' || obj === null) return obj; // 非对象或 null 直接返回
-let result = Array.isArray(obj) ? [] : {}; // 根据是对象还是数组来初始化 result
-for (let key in obj) {
-//里面的 key 是字符串
-if (obj.hasOwnProperty(key)) {
-result[key] = deepCopy(obj[key]); // 递归拷贝
-}
-}
-//深拷贝一般只拷贝自身的属性
-return result;
+  if (typeof obj !== 'object' || obj === null) return obj; // 非对象或 null 直接返回
+  let result = Array.isArray(obj) ? [] : {}; // 根据是对象还是数组来初始化 result
+  for (let key in obj) {
+  //里面的 key 是字符串
+    if (obj.hasOwnProperty(key)) {
+      result[key] = deepCopy(obj[key]); // 递归拷贝
+    }
+  }
+  //深拷贝一般只拷贝自身的属性
+  return result;
 }
 `补充：由于for in会遍历整个对象的原型链的所有可枚举的属性，因此需要hasOwnProperty判断是否为自身属性。for of不会`
 2、js 数据包实现 lodash 库中的 cloneDeep 函数
@@ -155,8 +177,6 @@ ontimeupdate()事件：只要进度条移动就触发该事件，但该事件一
 2、下次打开页面。onloaddate 时间触发，就可以从本地存储时间，让视频从取出的时间播放
 3、获得当前时间 video.currentTime
 
-
-
 ## javascript 中的数据类型？区别？（typeof 和 instanceof）(判断数组的方式有哪些？)
 
 基本数据类型(储存在栈里面)
@@ -167,6 +187,7 @@ ontimeupdate()事件：只要进度条移动就触发该事件，但该事件一
 5 BigInt :用于表示大于 2^53 - 1 的整数。
 6 String
 7 Symbol:是一种唯一且不可变的数据类型，通常用作对象属性的键。const sym2 = Symbol.for('description');可选的描述字符串，用于标识符的描述.
+当Symbol.for('description')里面的描述性语句相同时两者是等同的，const sym1 = Symbol('desc');const sym2 = Symbol('desc');这两个不相同
 
 对象数据类型（存储在堆里面）
 
@@ -191,7 +212,23 @@ console.log(Object.prototype.toString.call(window)) // [object Window]
 console.log(Object.prototype.toString.call(document)) // [object HTMLDocument]
 
 1、instanceof，Object.prototype.toString.call，Array.isarray
-
+function myInstanceof(obj, constructor) {
+  // 获取构造函数的 prototype 对象
+  let prototype = constructor.prototype;
+  // 获取对象的 __proto__ （也就是 [[Prototype]]，即对象的原型）
+  let proto = obj.__proto__;
+  // 循环遍历原型链
+  while (proto) {
+    // 如果找到了与 constructor.prototype 相等的原型，则返回 true
+    if (proto === prototype) {
+      return true;
+    }
+    // 沿着原型链向上查找
+    proto = proto.__proto__;
+  }
+  // 如果遍历到 proto 为 null 还没找到，则返回 false
+  return false;
+}
 ## JavaScript 数组（字符串）中常用的方法有哪些？
 
 数组：pop(),shift(),unshift(),push(),slice(),splice(),trim(),flat(),join(),concat(),includes(),sort(),indexOf(),find(),filter(),reverse(),
@@ -199,7 +236,7 @@ some(),every(),map(),forEach(),reduce(),fill(),entires(),keys(),values()
 `forEach()方法会针对每一个元素执行提供的函数，对数据的操作会改变原数组，该方法没有返回值`
 `map()方法不会改变原数组的值，返回一个新数组，新数组中的值为原数组调用函数处理之后的值`
 
-字符串：split(),sbuString,subStr(),replace(),toLowerCase(),toUpperCase(),charAt(),indexOf(),match(),search(),concat(),repeat(),slice(),substring(),substr()
+字符串：split(),sbuString,subStr(),replace(),toLowerCase(),toUpperCase(),charAt(),indexOf(),match(),search(),concat(),repeat(),slice()
 slice(): 使用索引范围截取字符串，支持负数索引。
 substring(): 使用索引范围截取字符串，不支持负数索引，会自动调整参数顺序。
 substr(): 使用起始索引和截取长度截取字符串，支持负数索引。
@@ -210,7 +247,6 @@ replace():返回一个新的字符串，其中的一个或所有匹配的模式�
 `公共方法：concat(),indexOf(),slice(),`
 
 ## JavaScript 中的类型转换机制
-
 显示类型转换：String(123)='123',123.toString()='123',Number('123') = 123,parseInt(),`parseFloat()将字符串转为浮点数`,Boolean(),等
 隐式类型转换：比较运算（==、!=、>、<）、if、while 需要布尔值地方算术运算（+、-、\*、/、%）
 1、使用加号（数字和字符串拼接为字符串）,其它数学运算符转为数字
@@ -251,6 +287,15 @@ promise 本身是同步的 微任务是由 js 引擎发起的，宏任务是由�
 `补充：e.stopPropagation()这个可以阻止事件冒泡，e.preventDefault()阻止事件默认行为（比如点击a标签跳转，拖拽到div上报错）`
 
 ## ajax 的实现原理，如何实现？（异步编程的实现方式）
+`是一种在不重新加载整个网页的情况下，使用 JavaScript 与服务器进行异步通信的技术。它允许网页从服务器请求数据，并在页面中局部更新内容，而无需刷新页面，从而提高了用户体验的流畅性和响应速度。`
+
+原理：
+用户在网页上触发一个事件（如点击按钮、选择下拉框）。
+JavaScript 创建一个 XMLHttpRequest 对象。
+使用 XMLHttpRequest 对象向服务器发送请求。
+服务器处理请求并返回响应（通常是 JSON、XML、HTML 或纯文本）。
+JavaScript 处理服务器返回的数据并更新网页内容。
+
 `原理：通过XmlHttpRequest对象来向服务器发异步请求，从服务器获得数据，然后用JavaScript来操作DOM而更新页面`
 1、const xhr = new XMLHttpRequest();创建对象
 `此处可以设置xhr.timeout超时时间， xhr.ontimeout超时回调，xhr.onerror异常处理等`
@@ -262,6 +307,8 @@ promise 本身是同步的 微任务是由 js 引擎发起的，宏任务是由�
 
 `AJAX请求的发送方式有很多种：原生xhr发送，jQuery，axios,fetch`
 
+总结：AJAX是可以认为是一种思想，用来实现局部刷新，通过使用 JavaScript 与服务器进行异步通信来实现局部刷新，而xhr和fetch是浏览器用来向服务器发送http请求的两种方式，（xhr属于老版浏览器）其中fetch更符合现代化浏览器，因为它基于promise设计，解决了回调地狱的问题，而`Axios 是一个基于 Promise 的 HTTP 客户端库`，可以理解为它封装了xhr，fetch可以实现更多的功能，比如请求和相应拦截器。
+
 1、定时器
 2、回调函数：回调地狱
 3、Promise：.then,.catch,.finally   AJAX是基于promise实现（返回的结果可以实现.then调用）
@@ -271,7 +318,7 @@ promise 本身是同步的 微任务是由 js 引擎发起的，宏任务是由�
 
 ## 说说你对正则表达式的理解？应用场景？
 
-const reg = /^ab$/ig; i 表示忽略大小写，g 表示全局匹配
+const reg = /^ab$/ig; `i 表示忽略大小写，g 表示全局匹配`
 
 test() exec()都是正则自带的方法，需要 reg 调用。 test()返回值 true 或 false exec()返回值 ['AB', index: 11, input: 'dsjofdsfjiaABkdow', groups: undefined]
 replace() match()需要字符串调用。 返回值为替换的字符串。 match()返回值类似 ['AB', index: 11, input: 'dsjofdsfjiaABkdow', groups: undefined]
@@ -294,7 +341,6 @@ let reg = /^(?=\d+)(?=[a-z]+)(?=[A-Z]+)[a-zA-Z0-9]{6,12}$/ 错误之处，\d+检
 `使用场景：表单验证`
 
 ## DOM 的常见操作？（BOM 的理解，常见的 BOM 对象）
-
 1、创建节点：document.createElement("div");document.createTextNode("content");
 2、选择节点：
 querySelector('选择器') querySelectorAll('选择器') 满足条件的第一个元素，和全部元素
@@ -413,7 +459,6 @@ console.log(Math.pow(10, 2)) //100
 随机数: Math.random() 返回一个介于 0（包括）和 1（不包括）之间的随机数
 console.log(Math.random())
 
-## 大文件如何做到断点上传
 
 ## 如何实现上拉加载，下拉刷新？
 上拉加载：`iscroll、better-scroll、pulltorefresh.js=>用于下拉刷新`
@@ -500,7 +545,6 @@ Promise.myAll = function (proms) {
             }).catch(reject); // 如果任意一个 Promise 失败，立即 reject
         });
     });
-
 };
 
 ## 实现 promise.race(超时处理，定义一个三秒取消操作的 promise)
@@ -509,6 +553,7 @@ Promise.race = function (promises) {
     return new Promise((resolve, reject) => {
         for (let i = 0; i < promises.length; i++) {
             Promise.resolve(promises[i]).then(resolve).catch(reject)
+            Promise.resolve(promises[i]).then((data)=>resolve(fata)).then(reject)   和上面的效果是一样的
         }
     })
 }
@@ -521,8 +566,6 @@ const promise3 = new Promise((resolve, reject) => setTimeout(() => reject('baz')
 Promise.race([promise1, promise2, promise3])
 .then(result => console.log(result)) // 输出 "baz"
 .catch(error => console.error(error)); // 输出 "baz"
-
-## js 的设计模式有哪些？
 
 ## 工程化
 前端工程化是一种开发方法论和实践，通过将前端开发流程中的各个环节进行规范化、自动化和模块化，以提升开发效率、代码质量和项目可维护性。
@@ -883,6 +926,34 @@ user-scalable:是用户的可以缩放的操作
 5、使用JavaScript动态调整
 6、使用em和rem单位
 7、CSS框架（如Tailwind CSS、Bulma）提供了丰富的工具类，帮助快速实现响应式设计
+
+## 用户出现白屏该怎么办？该如何排查？
+1. 检查浏览器控制台的错误信息
+打开浏览器的开发者工具（通常按 F12 或右键页面选择“检查”），并查看控制台（Console）是否有 JavaScript 错误。这是最常见的排查方式，因为任何未捕获的异常或语法错误都会导致页面无法正常渲染。
+
+SyntaxError（语法错误）：代码写错了，导致无法执行。
+TypeError（类型错误）：例如，调用未定义的方法或访问不存在的属性。
+Module not found：模块导入失败，可能是路径错误或依赖缺失。
+
+记录下控制台中的错误信息，并找到引发错误的代码行。
+如果是第三方库的错误，检查`版本和兼容性`问题。
+针对模块找不到等问题，检查项目依赖和模块导入路径是否正确。
+
+2. 查看网络请求（Network）
+检查页面所需的资源（HTML、CSS、JavaScript、图片等）是否加载成功。网络请求失败可能会导致页面渲染失败。
+
+是否有 404 错误，表示资源未找到。
+是否有 500 系列错误，表示服务器端错误。
+是否有某些资源加载超时或被阻止。
+
+如果资源加载失败，检查对应的 URL 是否正确。
+确认服务器是否正常运行，或请求是否被防火墙等安全机制阻挡。
+如果是跨域问题（CORS），检查服务器是否允许`跨域`请求。
+
+3. 把一些关键的代码放到try，catch里面，尤其是获取数据之前的代码
+4. 服务器端或客户端逻辑可能会导致页面进入无限循环重定向，从而无法显示内容。
+5. 断点调式
+
 
 
 

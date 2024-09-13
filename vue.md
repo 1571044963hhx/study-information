@@ -634,9 +634,6 @@ function isInViewport(element) {
 `具体属性介绍：top:元素最顶部的距离到浏览器顶部视口的距离。bottom：元素最底部的距离到浏览器顶部视口的距离`
 `注意：当元素在上面视口区域消失后，bottom和top的值会变成负数，rect的值还有其它属性width,height,x,y(右上角的坐标)`
 
-
-
-
 ## 生成器（可迭代对象）
 可迭代对象：即对象（或其原型链中的对象）有一个被命名为 Symbol.iterator 的属性，并且该属性是一个返回迭代器对象的方法。arr[Symbol.iterator]
 生成器：调用生成器函数返回一个迭代器。迭代器中含有 next 方法。
@@ -648,6 +645,7 @@ function isInViewport(element) {
 Object.prototype[Symbol.iterator] = function(){
     return Object.values(this)[Symbol.iterator]()
 }
+
 或者考虑生成器对象：
 Object.prototype[Symbol.iterator] = function*(){
     yield* Object.values(this)
@@ -656,8 +654,7 @@ for (let i of Object.values(this)){
     yield i
 }
 }
-const [a,b] = {a:3,b:4} 数组结构的本质就是要求右边是一个可迭代的对象。
-
+const [a,b] = {a:3,b:4} 数组解构的本质就是要求右边是一个可迭代的对象。
 可迭代对象：arr,str,nap,set,arguments,nodelist object 不可迭代（因此不能使用 for of 遍历,可以使用 for in 循环遍历）
 
 
@@ -667,11 +664,8 @@ FileReader对象：用于读取File或Blob对象的内容。它可以将文件�
 `注意：File和Blob数据只是保存了文件的基本信息，如大小size,type,name等数据，如果需要拿到里面的数据则需要通过FileReader对象`
 FormData对象：用于构造一组键值对，以便轻松地构建 multipart/form-data 格式的数据，常用于文件上传。
 
-
 multer: 是一个用于处理 multipart/form-data（不同种类的文件上传）的中间件，通常用于处理文件上传。
-
 window.location.reload();  刷新页面window可以省略  history.go(0);
-
 
 
 总结：
@@ -684,15 +678,31 @@ formData.append('username', 'exampleUser'); // 添加其他数据（我个人没
 三、发送 AJAX 请求：使用 fetch 或 axios 等库发送 POST 请求，将 FormData 对象作为请求体。
 
 后端：
-
 1、使用 multer 中间件处理文件上传：配置 multer 来处理多部分表单数据，并将文件存储到指定目录。
 2、处理文件上传请求：在路由中使用 upload.single('file') 中间件来处理单个文件上传。在处理请求的回调函数中，访问 req.file 获取上传的文件信息，访问 req.body 获取其他表单数据。
 3、计算和遍历文件的哈希值，不用重复储存
 4、如果文件上传失败，及时删除已上传的文件，释放存储空间。
 
-
 计算哈希值：增量算法：由于大文件上传的文件过大，计算文件的哈希值需要拿到文件的所有数据才能计算，因此考虑增量算法
 先拿到一部分数据计算哈希值，删除相对应的数据，再拿到下一部分的数据和前一部分的哈希值一起计算得到新的哈希值。
+
+## vue3.5的最新更新
+1、新增了一个useID的API，使用该API可获得组件的唯一标识，字符串类型
+2、新增了一个useTemplateRef的API，使用该API替代ref获取dom节点，
+const h1 = useTemplateRef('h1') 里面'h1'必须和ref="h1"相同
+const h2 = ref(null)
+3、props响应式的修改，一般来说props是响应式的，但解构出来的数据会丢失响应式，因此一般需要使用torefs使其保持响应式(const { count } = toRefs(props);)，目前修改了这个缺陷。
+
+
+`补充：watch和watchEffect的区别：`
+1、watchEffect监听更彻底，只要在里面涉及到的属性全部监听，也就是只有一个回调函数,但不能开启深度监视。
+2、watchEffect在初始化的过程中自动执行一次。
+3、watch提供修改前后的值，watchEffect不提供变化前后的值。
+watch可以转化watchEffect，设置相应参数{ immediate: true }，{ once: true }
+
+`补充：toRef和toRefs的区别`
+let age = toRef(obj,'age')
+let {age,name} = toRefs(obj)
 
 
 
