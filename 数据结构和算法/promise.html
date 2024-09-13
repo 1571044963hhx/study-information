@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let PENDING = 'pending'; FULFILLED = 'fulfilled'; REJECTED = 'rejected'
+        class myPromise {
+            result = undefined;
+            state = PENDING;
+            handler = [];
+            constructor(func) {
+                const resolve = (res) => {
+                    this.changeState(res, FULFILLED)
+                }
+                const reject = (rea) => {
+                    this.changeState(rea, REJECTED)
+                }
+                try {
+                    func(resolve, reject)
+                } catch (err) {
+                    reject(err)
+                }
+            }
+            changeState(data, state) {
+                if (this.state === PENDING) {
+                    this.state = state
+                    this.result = data
+                    this.run()
+                }
+            }
+            isPromise(value) {
+                if (value !== null && (typeof value === 'object' || typeof value === 'function')) {
+                    return typeof value.then === 'function'
+                }
+                return false
+            }
+
+            runOne(callback, resolve, reject) {
+                setTimeout(() => {
+                    if (typeof callback !== 'function') {
+                        const settled = this.state === FULFILLED ? resolve : reject
+                        settled(this.result)
+                        return
+                    }
+                    try {
+                        const data = callback(this.result)
+                        if (this.isPromise(data)) {
+                            data.then(resolve, reject)
+                        } else {
+                            resolve(data)
+                        }
+                    } catch (err) {
+                        reject(err)
+                    }
+                }, 0)
+            }
+            run() {
+                if (this.state === PENDING) return
+                while (this.handler.length) {
+                    const { onFulfilled, onRejected, resolve, reject } = this.handler.shift()
+                    if (this.state === FULFILLED) {
+                        this.runOne(onFulfilled, resolve, reject)
+                    } else {
+                        this.runOne(onRejected, resolve, reject)
+                    }
+                }
+            }
+            then(onFulfilled, onRejected) {
+                return new myPromise((resolve, reject) => {
+                    this.handler.push({ onFulfilled, onRejected, resolve, reject })
+                    // if (this.state === FULFILLED) {
+                    //     onFulfilled(this.result)
+                    // } else if (this.state === REJECTED) {
+                    //     onRejected(this.result)
+                    // }
+                    this.run()
+                })
+            }
+        }
+        const p1 = new myPromise((resolve, reject) => {
+            reject(234)
+        })
+        p1.then((res) => {
+            return res
+        }).then((res) => {
+            console.log(res, 1)
+        })
+        console.log(p1)
+        const p = new Promise((resolve, reject) => {
+            reject(345)
+            resolve(123)
+        })
+        p.then((res) => { console.log(res, '1') }, (rea) => { console.log(rea, '1') })
+        p.then((res) => { console.log(res, '2') }, (rea) => { console.log(rea, '2') })
+        p.then((res) => { console.log(res, '3') }, (rea) => { console.log(rea, '3') })
+        p.then((res) => { console.log(res, '4') }, (rea) => { console.log(rea, '4') })
+
+
+        function promiseALL(arr) {
+            return new Promise((resolve, reject) => {
+                const result = []
+                let fullfilledcount = 0
+                const count = arr.length
+                if (count == 0) {
+                    return resolve(result)
+                }
+                arr.forEach((prop, index) => {
+                    Promise.resolve(prop).then((data) => {
+                        result[index] = data
+                        fullfilledcount++
+                        if (fullfilledcount == count) {
+                            resolve(result)
+                        }
+                    }).catch(reject)
+                })
+            })
+        }
+        function promiseRace(arr) {
+            return new Promise((resolve, reject) => {
+                for (let i = 0; i < arr.length; i++) {
+                    Promise.resolve(arr[i]).then(resolve).catch(reject)
+                }
+            })
+        }
+        function new1(OBJ, ...rest) {
+            const obj = {}
+            let obj.__proto__ = OBJ.prototype
+            let result = OBJ.apply(obj, rest)
+            return result instanceof Object ? result : obj
+        }
+
+        function instance(a, A) {
+            let p = a.__proto__
+            let q = A.prototype
+            while (p) {
+                if (p == q) {
+                    return true
+                }
+                p = p.__proto__
+            }
+            return false
+        }
+        function call(context, ...rest) {
+            context.fn = this
+            var result = context.fn(...rest)
+            delete context.fn
+            return result
+        }
+        function bind(context, ...args) {
+            const self = this
+            return function (...newArga) {
+                return self.apply(context, [...args, ...newArga])
+            }
+        }
+    </script>
+</body>
+
+</html>

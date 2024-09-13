@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        //回溯算法框架
+        //state表示问题的当前状态，choices表示当前状态下可以做出的选择
+        // function backtrack(state, choices, res) {
+        //     //判断是否为解
+        //     if (isSolution(state)) {
+        //         //记录解
+        //         recordSolution(state, res);
+        //         //不再继续搜索
+        //         return
+        //     }
+        //     //遍历所有的选择
+        //     for (let choice of choices) {
+        //         //判断选择是否合法
+        //         if (isvalid(state, choice)) {
+        //             //做出选择，更新状态
+        //             makeChoice(state, choice)
+        //             backtrack(state, choices, res)
+        //             //回退，撤销选择，恢复到之前的状态
+        //             undoChoice(state, choice)
+        //         }
+        //     }
+        // }
+        //question：输入一个整数数组，其中不包含重复元素，返回所有可能的排列
+        // var permute = function (nums) {
+        //     const result = [];
+        //     const path = [];
+        //     // 回溯函数
+        //     const backtrack = (used) => {
+        //         // 如果路径长度等于输入数组的长度，说明找到一个排列
+        //         if (path.length === nums.length) {
+        //             result.push([...path]);
+        //             return;
+        //         }
+        //         for (let i = 0; i < nums.length; i++) {
+        //             // 跳过已经使用过的数字
+        //             if (used[i]) continue;
+        //             // 选择当前数字
+        //             path.push(nums[i]);
+        //             used[i] = true;
+        //             // 递归调用，继续选择下一个数字
+        //             backtrack(used);
+        //             // 回溯，撤销选择
+        //             path.pop();
+        //             used[i] = false;
+        //         }
+        //     }
+        //     // 初始化使用数组，表示每个数字是否已经在当前路径中
+        //     const used = new Array(nums.length).fill(false);
+        //     backtrack(used);
+        //     return result;
+        // };
+
+        // // 测试用例
+        // const nums = [1, 2, 3];
+        // console.log(permute(nums)); // 输出所有可能的排列
+
+
+        // var permuteUnique = function (nums) {
+        //     const result = [];
+        //     const path = [];
+        //     const used = new Array(nums.length).fill(false);
+
+        //     const backtrack = (used) => {
+        //         if (path.length === nums.length) {
+        //             result.push([...path]);
+        //             return;
+        //         }
+        //         //为什么在递归函数内部，循环遍历外部建立重置哈希表
+        //         //递归=>
+        //         //循环遍历=>
+        //         const usedInThisLayer = new Set();
+        //         //每一次循环只走一步，走完这一步记录再退回
+        //         for (let i = 0; i < nums.length; i++) {
+        //             if (used[i] || usedInThisLayer.has(nums[i])) continue;
+        //             path.push(nums[i]);
+        //             used[i] = true;
+        //             usedInThisLayer.add(nums[i]);
+        //             backtrack(used);
+        //             path.pop();
+        //             used[i] = false;
+        //         }
+        //     }
+        //     backtrack(used);
+        //     return result;
+        // };
+
+        // // 测试用例
+        // const nums = [1, 1, 2];
+        // console.log(permuteUnique(nums)); // 输出所有不重复的排列
+
+        // let nums = [2, 3, 6, 7], target = 7
+        // var combinationSum = function (candidates, target) {
+        //     //从小到大排序
+        //     candidates.sort((a, b) => a - b)
+        //     let result = [];
+        //     let path = [];
+        //     let sum = 0;
+
+        //     function backtrack() {
+        //         console.log(sum)
+        //         //确定回溯条件
+        //         if (sum === target) {
+        //             result.push([...path])
+        //             return
+        //         }
+        //         if (sum > target) {
+        //             return
+        //         }
+        //         for (let i = 0; i < candidates.length; i++) {
+        //             path.push(candidates[i])
+        //             sum += candidates[i]
+        //             backtrack()
+        //             sum -= candidates[i]
+        //             path.pop()
+        //         }
+        //     }
+        //     backtrack()
+        //     result.forEach(item => item.sort((a, b) => a - b))
+        //     let setArr = new Set()
+        //     result.forEach(item => setArr.add(JSON.stringify(item)))
+        //     result = Array.from(setArr).map(item => JSON.parse(item))
+        //     console.log(result)
+        //     return result
+        // };
+
+        // combinationSum(nums, target)
+
+        // let arr = [[1, 2, 3], [3, 2, 1]]
+        // arr.forEach(item => item.sort((a, b) => a - b))   这个可以修改数组，因为sort方法修改数组
+        // arr.forEach(item => JSON.stringify(item))  这个没有作用，因为JSON.stringify(item)不修改原数组，需要一个新值接受。
+        // let s = new Set()
+        // arr.forEach(item => s.add(item))
+        // console.log(s)
+
+        // let arr = [[1, 2, 3], [3, 2, 1]];
+        // arr.forEach(item => item.sort((a, b) => a - b)); // 对每个子数组进行排序
+
+        // let s = new Set();
+        // arr.forEach(item => s.add(JSON.stringify(item))); // 将每个子数组转换为 JSON 字符串并添加到 Set 中
+
+        // let uniqueArr = Array.from(s).map(item => JSON.parse(item)); // 将 Set 中的字符串转换回数组
+
+        // console.log(uniqueArr);
+
+
+        // var combinationSum = function (candidates, target) {
+        //     let result = [];
+        //     let path = [];
+
+        //     function backtrack(start, sum) {
+        //         if (sum === target) {
+        //             result.push([...path]);
+        //             return;
+        //         }
+        //         if (sum > target) {
+        //             return;
+        //         }
+
+        //         for (let i = start; i < candidates.length; i++) {
+        //             path.push(candidates[i]);  // 选择当前元素
+        //             backtrack(i, sum + candidates[i]);  // 递归调用，允许重复选择
+        //             path.pop();  // 撤销选择，回溯
+        //         }
+        //     }
+
+        //     backtrack(0, 0);
+        //     return result;
+        // };
+
+        // // 示例用法
+        // console.log(combinationSum([2, 3, 6, 2, 7], 7)); // [[2, 2, 3], [7]]
+
+        // var letterCombinations = function () {
+        //     let result = [];
+        //     let path = [];
+        //     let map = new Map()
+        //     let arr = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+        //     for (let j = 6; j <= 27; j += 3) {
+        //         map.set(j / 3, arr.slice(j - 6, j - 3))
+        //     }
+        //     console.log(map)
+        //     return map
+        // }
+        // letterCombinations()
+
+        // var generateParenthesis = function (n) {
+        //     //用于标识括号的有效性，当左括号的数量减去右括号的数量大雨或等于0时
+        //     let result = [];
+        //     let arr = ["(", ")"]
+        //     let left = 1, right = 0
+        //     function backtrack(path, flag) {
+        //         if (flag < 0 || left > n || right > n) {
+        //             return
+        //         }
+        //         // console.log(left, right)
+        //         if (left === n && right === n) {
+        //             console.log(path)
+        //             result.push(path.join(""))
+        //             return
+        //         }
+        //         for (let i = 0; i < 2; i++) {
+        //             path.push(arr[i])
+        //             // console.log(path)
+        //             if (arr[i] === "(") {
+        //                 left++
+        //             } else {
+        //                 right++
+        //             }
+        //             flag = left - right
+        //             // console.log(flag)
+        //             backtrack(path, flag)
+        //             if (arr[i] === "(") {
+        //                 left--
+        //             } else {
+        //                 right--
+        //             }
+        //             path.pop()
+        //         }
+        //     }
+        //     backtrack(['('], 1)
+        //     return result
+        // };
+
+        // generateParenthesis(3)
+
+
+        // console.log(JSON.stringify(['a', 'b', 'v']) === JSON.stringify(['a', 'b', 'v']))
+
+
+        // var solveNQueens = function (n) {
+        //     let result = []
+        //     let path = [];
+        //     let arrSet = new Set();
+        //     let diag1 = new Set();
+        //     let diag2 = new Set();
+        //     function backtrack(row) {
+        //         if (path.length === n) {
+        //             result.push([...path])
+        //             return
+        //         }
+        //         for (let col = 0; col < n; col++) {
+        //             if (arrSet.has(col) || diag1.has(row - col) || diag2.has(row + col)) {
+        //                 continue
+        //             }
+        //             path.push([row, col])
+        //             arrSet.add(col)
+        //             diag1.add(col - row)
+        //             diag2.add(col + row)
+        //             backtrack(row + 1, col)
+        //             path.pop()
+        //             arrSet.delete(col)
+        //             diag1.delete(row - col);
+        //             diag2.delete(row + col);
+        //         }
+        //     }
+        //     backtrack(0)
+        //     let res = []
+        //     let matrix = new Array(n).fill('.').map(() => new Array(n).fill('.'))
+        //     for (let i = 0; i < result.length; i++) {
+        //         result[i].forEach((item) => {
+        //             matrix[item[0]][item[1]] = 'Q'
+        //         })
+        //         console.log(matrix)
+        //         res.push(matrix)
+        //         result[i].map((item) => {
+        //             matrix[item[0]][item[1]] = '.'
+        //         })
+        //     }
+        //     console.log(res)
+        //     return res
+        // };
+
+        // solveNQueens(4)
+
+
+        // function checkStraightLine(points) {
+        //     if (points.length < 2) return true;
+
+        //     const [x0, y0] = points[0];
+        //     const [x1, y1] = points[1];
+        //     const dx = x1 - x0;
+        //     const dy = y1 - y0;
+
+        //     for (let i = 2; i < points.length; i++) {
+        //         const [x, y] = points[i];
+        //         if ((y - y0) * dx !== (x - x0) * dy) {
+        //             return false;
+        //         }
+        //     }
+        //     return true;
+        // }
+
+        let arr = [1, 4, 7, 4, 2, 7, 9, 3, 7, 33, 6]
+
+        //快速排序
+        function sort(arr) {
+            if (arr.length === 0 || arr.length === 1) {
+                return arr
+            }
+            let m = Math.floor((arr.length) / 2)
+            let mid = arr[m]
+            let left = []
+            let right = []
+            for (let i = 0; i < arr.length; i++) {
+                //必须把
+                if (i !== m) {
+                    if (arr[i] >= mid) {
+                        right.push(arr[i])
+                    } else {
+                        left.push(arr[i])
+                    }
+                }
+            }
+            return [...sort(left), mid, ...sort(right)]
+        }
+        console.log(sort(arr))
+
+        // console.log(typeof Number("d")) NAN是number
+        console.log(isNaN(6))
+
+
+        // let s = "3[a2[bc]]"
+        // const [self, times, str] = s.match(/(\d*)\[([^\[\]]*)\]/) || []
+        //(\d*)表示匹配数字
+        //\[表示匹配[,因为[在正则中有实际的作用，因此需要转义
+        // ([^\[\]]*)  [abc]表示匹配a,b,c中的任意一个字符，[^\[\]]*表示匹配里面的任意字符^\[\]不是[或者不是]的字符
+        // console.log(self, times, str)
+        let nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3
+        // var maxSlidingWindow = function (nums, k) {
+        //     let res = []
+        //     let max = -Infinity
+        //     for (let i = 0; i < k; i++) {
+        //         max = Math.max(max, nums[i])
+        //     }
+        //     res.push(max)
+        //     console.log(res)
+
+        //     for (let i = 1; k <= nums.length - k; i++) {
+        //         let deleteNum = nums[i - 1];
+        //         if (deleteNum !== max) {
+        //             max = Math.max(nums[i + k - 1], max)
+        //             res.push(res)
+        //         } else {
+        //             max = -Infinity
+        //             for (let j = i; j <= i + k - 1; j++) {
+        //                 max = Math.max(max, nums[j])
+        //                 res.push(res)
+        //             }
+        //         }
+        //     }
+        //     console.log(rse)
+        //     return res
+        // };
+
+        // var maxSlidingWindow = function (nums, k) {
+        //     // 结果数组，用来存放滑动窗口中的最大值
+        //     let res = [];
+        //     // 记录当前窗口内的最大值
+        //     let max = -Infinity;
+
+        //     // 计算第一个窗口的最大值
+        //     for (let i = 0; i < k; i++) {
+        //         max = Math.max(max, nums[i]);
+        //     }
+        //     // 将第一个窗口的最大值添加到结果中
+        //     res.push(max);
+
+        //     // 遍历数组，从第二个窗口开始
+        //     for (let i = 1; i <= nums.length - k; i++) {
+        //         // 如果移出窗口的元素是当前的最大值
+        //         if (nums[i - 1] === max) {
+        //             // 需要重新计算窗口的最大值
+        //             max = -Infinity;
+        //             for (let j = i; j < i + k; j++) {
+        //                 max = Math.max(max, nums[j]);
+        //             }
+        //         } else {
+        //             // 否则，只需要比较新加入的元素和当前的最大值
+        //             max = Math.max(max, nums[i + k - 1]);
+        //         }
+        //         // 将当前窗口的最大值添加到结果中
+        //         res.push(max);
+        //     }
+        //     console.log(res)
+        //     return res;
+        // };
+        // maxSlidingWindow(nums, k)
+
+        // let arr1 = [1, 2, 4, [5, 6, 7], [2, 4, [6, 4]]]
+
+        // function newFlat(arr, res = []) {
+        //     let n = arr.length
+        //     for (let i = 0; i < n; i++) {
+        //         if (Array.isArray(arr[i])) {
+        //             newFlat(arr[i], res)
+        //         } else {
+        //             res.push(arr[i])
+        //         }
+        //     }
+        //     return res
+        // }
+        // console.log(newFlat(arr1))
+
+        // let obj = { name: 'zhangfei', age: 18, school: { address: 'beijing', money: 5000 } }
+
+        // function newCopy(obj, seen = new Map()) {
+        //     let res = Array.isArray(obj) ? [] : {}
+        //     if (typeof obj !== "object" || typeof obj === null) {
+        //         return obj
+        //     }
+        //     // 检查是否已经复制过这个对象
+        //     if (seen.has(obj)) {
+        //         return seen.get(obj);
+        //     }
+        //     // 记录这个对象，避免循环引用
+        //     seen.set(obj, res);
+
+        //     for (let i in obj) {
+        //         if (obj.hasOwnProperty(i)) {
+        //             res[i] = newCopy(obj[i])
+        //         }
+        //     }
+        //     return res
+        // }
+        // console.log(newCopy(obj))
+
+        // let s = "abc", t = "ahbgdc"
+        // var isSubsequence = function (s, t) {
+        //     let left = 0
+        //     for (let i = 0; i < t.length; i++) {
+        //         if (left === s.length) {
+        //             return true
+        //         }
+        //         if (t[i] === s[left]) {
+
+        //             left++
+        //             console.log(left)
+        //         }
+        //     }
+        //     if (left === s.length) {
+        //         return true
+        //     }
+        //     return false
+        // };
+        // console.log(isSubsequence(s, t))
+        // let intervals = [[1, 2], [3, 5], [6, 7], [8, 10], [12, 16]], newInterval = [4, 8]
+        // var insert = function (intervals, newInterval) {
+        //     let res = []
+        //     let arr = [...intervals, newInterval].sort((a, b) => a[0] - b[0])
+        //     let current = arr[0]
+        //     for (let i = 1; i < arr.length; i++) {
+        //         const next = arr[i]
+        //         if (next[0] <= current[1]) {
+        //             const start = current[0]
+        //             const end = Math.max(current[1], next[1])
+        //             current = [start, end]
+        //         } else {
+        //             res.push([...current])
+        //             current = arr[i]
+        //         }
+        //     }
+        //     res.push([...current])
+        //     return res
+        // };
+        // console.log(insert(intervals, newInterval))
+        // let points = [[10, 16], [2, 8], [1, 6], [7, 12]]
+        // function findMinArrowShots(points) {
+        //     if (points.length === 0) return 0;
+        //     let res = []
+        //     points.sort((a, b) => a[0] - b[0])
+        //     let current = points[0]
+        //     for (let i = 1; i < points.length; i++) {
+        //         console.log(current)
+        //         let next = points[i]
+        //         if (current[1] >= next[0]) {
+        //             const start = next[0]
+        //             const end = Math.min(current[1], next[1])
+        //             current = [start, end]
+        //         } else {
+        //             res.push([...current])
+        //             current = next
+        //         }
+        //     }
+        //     res.push([...current])
+        //     return res.length
+        // }
+        // console.log(findMinArrowShots(points))
+
+        // let hh = 'dnjkcnsjvn'
+        // console.log(hh.substring(1, 4)) //和slice一样
+        // let a = 5
+        // console.log(a--)
+        // for (let i = 0; i < 6; i++) {
+        //     console.log(i)
+        // }
+        //++ 操作符只能作用于变量或对象的属性，不能对数字字面量或表达式的结果使用后置自增操作。
+        // console.log(5++)//报错
+
+        // var a = 'w'
+        // let obj = {
+        //     a: 'o',
+        //     print: function () {
+        //         console.log(this.a);
+        //     },
+        //     print2: () => {
+        //         console.log(this.a);
+        //     },
+        // }
+        // let p = obj.print;   //可以认为p是一个函数了,函数执行可以认为是全局调用
+        // let p2 = obj.print2;
+        // //'o',普通函数的this指向取决于调用它的对象，也就是说只有执行的时候才知道
+        // //箭头函数的 this 绑定在函数定义时确定，而不是在调用时确定。它继承了外部函数的 this，
+        // //这是箭头函数的一个重要特性。箭头函数的 this 在定义时从其外部(obj)词法作用域(全局作用域)继承。
+        // obj.print(); //'o'  print()认为是一个方法，比如nums.slice()
+        // obj.print2(); //'w'
+        // p(); // 'w'
+        // p2(); // 'w'
+
+        // let a = 'sanjkdnjid'
+        // console.log(a.length)
+
+        // var trailingZeroes = function (n) {
+        //     if (n === 0) {
+        //         return 0
+        //     }
+        //     let res = 0
+        //     let mul = 1
+        //     console.log(n)
+        //     for (let i = 1; i <= n; i++) {
+        //         console.log(i)
+        //         mul = mul * i
+        //     }
+        //     console.log(mul)
+        //     let nums = (mul + '').split('')
+        //     for (let i = nums.length - 1; i >= 0; i--) {
+        //         if (nums[i] === 0) {
+        //             res++
+        //         } else {
+        //             return res
+        //         }
+        //     }
+        // };
+        // trailingZeroes(5)
+        let intervals = [[1, 4], [2, 3], [3, 4]]
+        var findRightInterval = function (intervals) {
+            if (intervals.length === 1) return [-1]
+            let index = Infinity;
+            let arr = []
+            for (let i = 0; i < intervals.length; i++) {
+                let target = intervals[i][1]
+                let res = Infinity
+                for (let j = 0; j < intervals.length; j++) {
+                    if (intervals[j][0] >= target) {
+                        if (intervals[j][0] - target < res) {
+                            res = intervals[j][0] - target
+                            index = j
+                        }
+                    }
+                }
+                if (index === Infinity) {
+                    arr.push(-1)
+                } else {
+                    arr.push(index)
+                    index = Infinity
+                }
+            }
+            return arr
+        };
+        console.log(findRightInterval(intervals))
+        let matrix = [["0","1"],["0","1"]]
+        var maximalRectangle = function (matrix) {
+            let m = matrix.length, n = matrix[0].length
+            let dp = new Array(m).fill(0).map(() => new Array(n).fill(new Array(2).fill(0)))
+            //边界处理,列
+            dp[0][0] = [matrix[0][0], matrix[0][0]]
+            for (let i = 1; i < n; i++) {
+                if (matrix[0][i] === '0') {
+                    dp[0][i] = ['0', '0']
+                } else {
+                    dp[0][i] = [matrix[0][i], Number(dp[0][i - 1][1]) + 1]
+                }
+            }
+            // 边界处理,行
+            for (let i = 1; i < m; i++) {
+                if (matrix[i][0] === '0') {
+                    dp[i][0] = ['0', '0']
+                } else {
+                    dp[i][0] = [Number(dp[i - 1][0][0]) + 1, matrix[i][0]]
+                }
+            }
+            for (let i = 1; i < m; i++) {
+                for (let j = 1; j < n; j++) {
+                    if (matrix[i][j] === '0') {
+                        dp[i][j] = ['0', '0']
+                    } else {
+                        dp[i][j] = [Math.min(dp[i - 1][j][0], dp[i - 1][j - 1][0]) + 1, Math.min(dp[i][j - 1][1], dp[i - 1][j - 1][1]) + 1]
+                    }
+                }
+            }
+            let res = 0
+            for (let i = 0; i < m; i++) {
+                for (let j = 0; j < n; j++) {
+                    res = Math.max(res, dp[i][j][0] * dp[i][j][1])
+                }
+            }
+            return res
+        };
+        maximalRectangle(matrix)
+
+
+        
+
+
+
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        //0-1背包
+        function knapsack(wgt, val, i, c) {
+            //i表示第i个物品(可以认为最优解放了多少个物品),c表示背包容量
+            if (i === 0 || c === 0) {
+                return 0
+            }
+            //若超出背包容量，则不放入
+            if (wgt[i - 1] > c) {
+                return knapsack(wgt, val, i - 1, c)
+            }
+            const no = knapsack(wgt, val, i - 1, c)
+            const yes = knapsack(wgt, val, i - 1, c - wgt[i - 1]) + val[i - 1]
+            return Math.max(no, yes)
+        }
+    </script>
+</body>
+
+</html>

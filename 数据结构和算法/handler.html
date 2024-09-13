@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <script>
+      //1、选择排序(选取最小值放在左边)
+      let arr = [9, 7, 5, 3, 1, 3, 5, 7, 11, 1, 4, 2, 2, 1, 9];
+      function sort(arr) {
+        for (let i = 0; i < arr.length; i++) {
+          //定义最小值的索引
+          let k = i;
+          //选择未排序区间的最小值
+          for (let j = i + 1; j < arr.length; j++) {
+            if (arr[j] < arr[k]) {
+              k = j;
+            }
+          }
+          [arr[i], arr[k]] = [arr[k], arr[i]];
+        }
+      }
+      // sort(arr)
+      // console.log(arr)
+
+      //2、冒泡排序(选择相邻的两个值比较大小交换位置)
+      function sort1(arr) {
+        for (let i = arr.length; i > 0; i--) {
+          let flag = false;
+          //j < i 表示未排序的区间
+          for (let j = 0; j < i; j++) {
+            if (arr[j] > arr[j + 1]) {
+              let tmp = arr[j];
+              arr[j] = arr[j + 1];
+              arr[j + 1] = tmp;
+              flag = true;
+            }
+          }
+          if (!flag) break;
+        }
+      }
+      // sort1(arr)
+      // console.log(arr)
+
+      //3、插入排序(在未排序的区间选择一个基准元素，将该元素与其左侧已排序的元素逐一比较，并将其插入正确的位置)
+      function sort2(arr) {
+        for (let i = 1; i < arr.length; i++) {
+          let base = arr[i],
+            j = i - 1;
+          //将已经排好序的值与需要排序的值进行比较，大于的值向后移动一位
+          while (j >= 0 && arr[j] > base) {
+            arr[j + 1] = arr[j];
+            j--;
+          }
+          //由于最后一步已经减j--了，因此需要插入的位置变为了j+1
+          arr[j + 1] = base;
+        }
+      }
+      //希尔排序，具有不稳定性
+      function shellSort(arr) {
+        let n = arr.length;
+        // 初始化增量 gap
+        for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+          // 对每个子序列进行插入排序
+          for (let i = gap; i < n; i++) {
+            let temp = arr[i];
+            let j;
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+              arr[j] = arr[j - gap];
+            }
+            arr[j] = temp;
+          }
+        }
+        return arr;
+      }
+      // sort2(arr)
+      // console.log(arr)
+      //4、快速排序(随机选取一个值，将小于该值的数组放在左边，大于的放在右边),排序的结果产生了一个新数组
+      function sort3(arr) {
+        let a = 0,
+          b = arr.length - 1;
+        let m = Math.floor((a + b) / 2);
+        if (arr.length <= 1) {
+          //递归排序退出条件
+          return arr;
+        }
+        let left = [];
+        let right = [];
+        let mid = arr[m];
+        for (let i = 0; i < arr.length; i++) {
+          if (i != m) {
+            if (arr[i] < mid) {
+              left.push(arr[i]);
+            } else {
+              right.push(arr[i]);
+            }
+          }
+        }
+        return [...sort3(left), mid, ...sort3(right)];
+      }
+      // console.log(sort3(arr))
+
+      //5、归并排序(将数组随机分为两半，)
+      function sort4(array) {
+        // 基本情况：如果数组只有一个元素或为空，则直接返回数组
+        if (array.length <= 1) {
+          return array;
+        }
+        // 将数组分成两半
+        const mid = Math.floor(array.length / 2);
+        const left = array.slice(0, mid);
+        const right = array.slice(mid);
+        // 递归地对两半进行排序并合并
+        return merge(sort4(left), sort4(right));
+      }
+      //合并两个有序数组
+      function merge(left, right) {
+        let result = [];
+        let i = 0;
+        let j = 0;
+        // 交替取出两个数组中较小的元素，直到其中一个数组为空
+        while (i < left.length && j < right.length) {
+          if (left[i] < right[j]) {
+            result.push(left[i]);
+            i++;
+          } else if (left[i] > right[j]) {
+            result.push(right[j]);
+            j++;
+          } else {
+            result.push(left[i], right[j]);
+            i++;
+            j++;
+          }
+        }
+        // 将剩余的元素添加到结果数组中
+        return result.concat(left.slice(i)).concat(right.slice(j));
+      }
+      // console.log(sort4(arr))
+
+      //6、堆排序(首先将数组建立为一个最大堆，堆顶元素为最大值，顶元素不断出堆(需要进行堆化))
+      function sort5(arr) {
+        let n = arr.length;
+        // 构建最大堆,堆化除叶节点之外的所有节点（Math.floor(n / 2) - 1表示所有非叶节点的索引）
+        for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+          heapify(arr, n, i);
+        }
+        // 逐一将堆顶元素移到数组末尾，并调整堆
+        for (let i = n - 1; i > 0; i--) {
+          // 交换堆顶元素和当前堆的最后一个元素
+          [arr[0], arr[i]] = [arr[i], arr[0]];
+          // 调整堆
+          heapify(arr, i, 0);
+        }
+      }
+      function heapify(arr, n, i) {
+        let largest = i; // 假设当前节点是最大值
+        let left = 2 * i + 1; // 左子节点索引
+        let right = 2 * i + 2; // 右子节点索引
+        // 如果左子节点大于当前节点
+        if (left < n && arr[left] > arr[largest]) {
+          largest = left;
+        }
+        // 如果右子节点大于当前最大值
+        if (right < n && arr[right] > arr[largest]) {
+          largest = right;
+        }
+        // 如果最大值不是当前节点(也就是说上面两步任意一步执行了)
+        if (largest !== i) {
+          // 交换它们
+          [arr[i], arr[largest]] = [arr[largest], arr[i]];
+          // 递归调整受影响的子树
+          heapify(arr, n, largest);
+        }
+      }
+
+      //7、桶排序:将数组元素分布到有限数量的桶中，每个桶内的元素再进行单独排序，
+      //最后将所有桶内的元素合并得到最终排序的结果。桶排序适用于数据均匀分布的场景。
+      function bucketSort(arr, bucketSize = 5) {
+        if (arr.length === 0) {
+          return arr;
+        }
+        // 确定最小值和最大值
+        let minValue = arr[0];
+        let maxValue = arr[0];
+        for (let i = 1; i < arr.length; i++) {
+          if (arr[i] < minValue) {
+            minValue = arr[i];
+          } else if (arr[i] > maxValue) {
+            maxValue = arr[i];
+          }
+        }
+        // 创建桶
+        const bucketCount = Math.floor((maxValue - minValue) / bucketSize) + 1; //一共有多少个桶
+        //建立一个数组，里面的每一个元素都代表一个桶，也就是一个数组
+        const buckets = new Array(bucketCount);
+        for (let i = 0; i < buckets.length; i++) {
+          buckets[i] = [];
+        }
+        // 将元素分配到对应的桶中
+        for (let i = 0; i < arr.length; i++) {
+          const bucketIndex = Math.floor((arr[i] - minValue) / bucketSize);
+          buckets[bucketIndex].push(arr[i]);
+        }
+        // 对每个桶内的元素进行排序
+        arr.length = 0;
+        for (let i = 0; i < buckets.length; i++) {
+          if (buckets[i].length > 0) {
+            insertionSort(buckets[i]); // 这里使用插入排序
+            arr.push(...buckets[i]);
+          }
+        }
+        return arr;
+      }
+
+      // 插入排序，用于桶内排序
+      function insertionSort(arr) {
+        for (let i = 1; i < arr.length; i++) {
+          let key = arr[i];
+          let j = i - 1;
+          while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+          }
+          arr[j + 1] = key;
+        }
+        return arr;
+      }
+
+      //8、计数排序
+      // let arr = [9, 7, 5, 3, 1, 3, 5, 7, 11, 1, 4, 2, 2, 1, 9]
+      function countingSort(arr) {
+        if (arr.length === 0) {
+          return arr;
+        }
+        // 找到数组中的最大值和最小值
+        let min = arr[0];
+        let max = arr[0];
+        for (let i = 1; i < arr.length; i++) {
+          if (arr[i] < min) {
+            min = arr[i];
+          } else if (arr[i] > max) {
+            max = arr[i];
+          }
+        }
+        // 创建计数数组
+        let count = new Array(max - min + 1).fill(0);
+
+        // 计数
+        for (let i = 0; i < arr.length; i++) {
+          count[arr[i] - min]++;
+        }
+        console.log(count);
+
+        let sortedArr = [];
+        for (let i = 0; i < count.length; i++) {
+          if (count[i] !== 0) {
+            let sortArr = new Array(count[i]).fill(min + i);
+            sortedArr = [...sortedArr, ...sortArr];
+          }
+        }
+        return sortedArr;
+      }
+      console.log(countingSort(arr));
+
+      //9、基数排序
+      //getMax 函数遍历数组，找到最大值，用于确定最高位数
+      function getMax(arr) {
+        let max = arr[0];
+        for (let i = 1; i < arr.length; i++) {
+          if (arr[i] > max) {
+            max = arr[i];
+          }
+        }
+        return max;
+      }
+
+      function countingSortForRadix(arr, exp) {
+        let n = arr.length;
+        let output = new Array(n);
+        let count = new Array(10).fill(0); //0-9
+
+        // 计算每个数字出现的次数
+        for (let i = 0; i < n; i++) {
+          //结果取模 10
+          let index = Math.floor(arr[i] / exp) % 10;
+          count[index]++;
+        }
+        // console.log(count)
+
+        // 累计计数
+        //累积计数的目的是为了确定每个数字在排序后数组中的正确位置。
+        //我们通过计算每个数字在数组中出现的次数，然后累积这些计数来得到它们的最终位置
+        //通过累积计数，我们将每个桶的计数变成它在排序后数组中的位置。
+        //例如，如果 count[2] 是 4，这意味着所有个位数为 2 的数字将在输出数组中的第 4 位及之后的位置开始。
+        for (let i = 1; i < 10; i++) {
+          count[i] += count[i - 1];
+        }
+        console.log(count);
+
+        // 构建输出数组
+        for (let i = n - 1; i >= 0; i--) {
+          let index = Math.floor(arr[i] / exp) % 10;
+          output[count[index] - 1] = arr[i];
+          count[index]--;
+        }
+
+        // 将输出数组复制回原数组
+        for (let i = 0; i < n; i++) {
+          arr[i] = output[i];
+        }
+      }
+
+      function radixSort(arr) {
+        let max = getMax(arr);
+
+        // 按位排序，从最低有效位开始
+        for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+          countingSortForRadix(arr, exp);
+        }
+      }
+
+      // 测试
+      let nums = [170, 45, 75, 90, 802, 24, 2, 66];
+      radixSort(nums);
+      console.log(nums); // 输出: [2, 24, 45, 66, 75, 90, 170, 802]
+    </script>
+  </body>
+</html>

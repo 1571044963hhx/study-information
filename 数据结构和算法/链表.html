@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // //链表，定义链表或者使用class类来定义链表
+        // function ListNode(val) {
+        //     this.val = val
+        //     this.next = null
+        // }
+        //定义节点类
+        class ListNode {
+            constructor(value) {
+                this.value = value; // 节点的值
+                this.next = null;   // 指向下一个节点的指针
+            }
+        }
+        // 定义链表类
+        class LinkedList {
+            constructor() {
+                this.head = null; //初始化链表为空，head指向第一个节点
+            }
+            // 添加节点到链表末尾
+            append(value) {
+                const newNode = new ListNode(value);
+                if (!this.head) {
+                    this.head = newNode; // 如果链表为空，则新节点为第一个节点
+                } else {
+                    let current = this.head;
+                    while (current.next) {
+                        current = current.next; // 找到链表的最后一个节点
+                    }
+                    current.next = newNode; // 将新节点加到链表的末尾
+                }
+            }
+            // 打印链表
+            print() {
+                let current = this.head;
+                const elements = [];
+                while (current) {
+                    elements.push(current.value);
+                    current = current.next;
+                }
+                console.log(elements.join(' -> '));
+            }
+            // 删除链表中的某个节点
+            delete(value) {
+                if (!this.head) return; // 如果链表为空
+                // 如果删除的是第一个节点
+                if (this.head.value === value) {
+                    this.head = this.head.next;
+                    return;
+                }
+                let current = this.head;
+                while (current.next && current.next.value !== value) {
+                    current = current.next;
+                }
+                if (current.next) {
+                    current.next = current.next.next; // 跳过要删除的节点
+                }
+            }
+        }
+        const linkedList = new LinkedList();
+        linkedList.append(1);
+        linkedList.append(2);
+        linkedList.append(3);
+        linkedList.append(4);
+        linkedList.append(5);
+        linkedList.print()
+        linkedList.delete(3)
+        linkedList.print()
+
+        //1、判断是否为相交链表=》给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null 。
+        // var getIntersectionNode = function (headA, headB) {
+        //     if (!headA || !headB) return null;
+        //     let pA = headA;
+        //     while (pA) {
+        //         let pB = headB;
+        //         while (pB) {
+        //             if (pA === pB) return pA;
+        //             pB = pB.next
+        //         }
+        //         pA = pA.next
+        //     }
+        // };
+
+        //2、判断是否为环形链表
+        //3、链表反转
+    </script>
+</body>
+
+</html>
