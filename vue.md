@@ -704,6 +704,70 @@ watch可以转化watchEffect，设置相应参数{ immediate: true }，{ once: t
 let age = toRef(obj,'age')
 let {age,name} = toRefs(obj)
 
+## 光标跟随移动和输入框高度自定义
+
+### 1、输入框高度自定义
+const handleChange = (e: any) => {
+    const textarea = e.target
+    textarea.style.height = 'auto'
+    textarea.style.height = textarea.scrollHeight + 'px'
+}
+只要输入框里面的内容改变就触发该函数，先让输入框高度自适应，也就是当删除的时候高度减少，再获取滚轮的高度将其赋值给输入框的高度即可。
+
+### 2、光标跟随移动
+const getLastTextNode = (dom) => {
+    if (!dom) return null;  // 增加空值检查，如果 `dom` 为空，则直接返回 null，防止错误
+    const children = dom.childNodes;  // 获取传入的 `dom` 的所有子节点
+    for (let i = children.length - 1; i >= 0; i--) {  // 从最后一个子节点开始遍历（倒序遍历）
+        const node = children[i];  // 获取当前遍历的子节点
+        if (node.nodeType == Node.TEXT_NODE && /\S/.test(node.nodeValue)) {  
+            // 如果该节点是文本节点 (nodeType == TEXT_NODE) 且内容中包含非空白字符
+            node.nodeValue = node.nodeValue.replace(/\s+$/, '');  // 去除文本末尾的空白字符
+            return node;  // 返回找到的文本节点
+        } else if (node.nodeType == Node.ELEMENT_NODE) {  
+            // 如果该节点是一个元素节点（例如 <div>, <p> 等）
+            const last = getLastTextNode(node);  // 递归调用函数，继续查找当前元素节点的子节点
+            if (last) return last;  // 如果在子节点中找到最后的文本节点，返回它
+        }
+    }
+    return null;  // 如果没有找到有效的文本节点，则返回 null
+}
+
+const updateCursor = async () => {
+    await nextTick()  // 确保DOM已经渲染完成
+    const contentDom = contentRef.value
+    const lastText = getLastTextNode(contentDom)
+    const textNode = document.createTextNode('\u200b') // 插入临时文本节点，用于计算光标位置
+
+    if (lastText) {
+        lastText.parentElement.appendChild(textNode)
+    } else {
+        contentDom.appendChild(textNode)
+    }
+
+    const domRect = contentDom.getBoundingClientRect()  // 获取容器的位置信息
+    const range = document.createRange()
+    range.setStart(textNode, 0)
+    range.setEnd(textNode, 0)
+
+    const rect = range.getBoundingClientRect()  // 使用range计算文本节点位置
+    pos.x = rect.left - domRect.left
+    pos.y = rect.top - domRect.top
+
+    // 获取当前行的 `font-size`
+    const computedStyle = window.getComputedStyle(textNode.parentElement);
+    const fontSize = computedStyle.getPropertyValue('font-size');
+    cursorHeight.value = parseInt(fontSize, 10);  // 更新光标的高度
+
+    textNode.remove()  // 删除临时文本节点
+}
+
+.cursor {
+    left: calc(v-bind('pos.x') * 1px);
+    top: calc(v-bind('pos.y') * 1px);
+    height: calc(v-bind('cursorHeight') * 1px);
+}
+
 
 
 
