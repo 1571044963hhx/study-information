@@ -659,8 +659,8 @@ const [a,b] = {a:3,b:4} 数组解构的本质就是要求右边是一个可迭�
 
 
 ## 文件上传
-
-FileReader对象：用于读取File或Blob对象的内容。它可以将文件读取为文本或数据UR（base64 编码的字符串）。
+FileReader对象：用于读取File或Blob对象的内容。它可以将文件读取为文本或数据URl（base64 编码的字符串）。
+存在一个方法readDataUrl(),可以将数据转换为base格式的字符串，该字符串可以直接放入src中实现预览。
 `注意：File和Blob数据只是保存了文件的基本信息，如大小size,type,name等数据，如果需要拿到里面的数据则需要通过FileReader对象`
 FormData对象：用于构造一组键值对，以便轻松地构建 multipart/form-data 格式的数据，常用于文件上传。
 
@@ -737,7 +737,7 @@ const updateCursor = async () => {
     await nextTick()  // 确保DOM已经渲染完成
     const contentDom = contentRef.value
     const lastText = getLastTextNode(contentDom)
-    const textNode = document.createTextNode('\u200b') // 插入临时文本节点，用于计算光标位置
+    const textNode = document.createTextNode('\u200b') // 插入临时文本节点，用于计算光标位置,零宽度空格字符
 
     if (lastText) {
         lastText.parentElement.appendChild(textNode)
