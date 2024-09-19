@@ -47,6 +47,7 @@ W3C 对 web 标准提出了规范化的要求，也就是在实际编程中的�
 
 ## 行内元素和块级元素有哪些？
 行内元素：span,button,input,a,strong,em,label,
+`注意：行内元素不能设置和高度有关的属性`
 块级元素：div,img,h1-h6,p,ul,ol,li,table,from,header
 
 ## 说一下 web worker
@@ -195,9 +196,6 @@ user-scalable:是用户的可以缩放的操作
 5、使用JavaScript动态调整
 6、使用em和rem单位
 7、CSS框架（如Tailwind CSS、Bulma）提供了丰富的工具类，帮助快速实现响应式设计
-
-
-
 
 ## 谈谈你对BFC的理解？(主要用来解决margin坍塌，float元素覆盖后面的元素的问题)
 BFC:块级格式化上下文，它是页面中的一块渲染区域，并且有一套自己的渲染规则
@@ -677,7 +675,7 @@ GPU 加速：使用 GPU 加速渲染图层，提高渲染性能和流畅度。
 5、布局与绘制：计算每个节点的几何信息，绘制页面。
 6、事件循环：处理异步任务和事件。
 
-`补充：async和defer的区别`理解：脚步的执行和HTML的解析不能同时进行，defer延时，就是将脚步执行放在后面
+`补充：async和defer的区别`理解：脚本的执行和HTML的解析不能同时进行，defer延时，就是将脚步执行放在后面
 异步脚本：通过 async 属性，脚本可以异步加载，但执行时仍会阻塞 HTML 解析[加载时HTML继续解析，执行时HTML暂停解析]
 <script src="script.js" async></script>
 延迟脚本：通过 defer 属性，脚本可以在 HTML 完全解析后再执行，不会阻塞 HTML 解析
@@ -689,4 +687,45 @@ GPU 加速：使用 GPU 加速渲染图层，提高渲染性能和流畅度。
 
  `src和herf的区别`
  src:针对script标签，一般用于引入脚本，会暂停页面的解析
- herf:也会并行下载，但不会停止当前文档的处理，一般用于引入网络资源（图片等），针对标签和link标签。
+ herf:也会并行下载，但不会停止当前文档的处理，一般用于引入网络资源（图片等），针对a标签和link标签(一般用于引入css文件)。
+
+## 将数字转化为字符串格式
+const date = new Date(1695038400000);
+console.log(date);
+console.log(date.getFullYear()); // 获取年，例如 2024
+console.log(date.getMonth()); // 获取月（0-11），例如 8 表示9月
+console.log(date.getDate()); // 获取日（1-31），例如 18
+console.log(date.getHours()); // 获取小时（0-23）
+console.log(date.getMinutes()); // 获取分钟（0-59）
+console.log(date.getSeconds()); // 获取秒（0-59）
+console.log(date.getMilliseconds()); // 获取毫秒（0-999）
+console.log(date.getDay()); // 获取星期几（0-6），0表示星期天
+console.log(date.getTime()); // 获取自1970年1月1日以来的毫秒数（时间戳）
+const year = date.getFullYear();
+const month = ('0' + (date.getMonth() + 1)).slice(-2); // 补齐两位数字
+const day = ('0' + date.getDate()).slice(-2);
+console.log(`${year}-${month}-${day}`); // 格式化为 YYYY-MM-DD
+`注意：可以直接把毫秒数放入Date函数里面`
+
+## 比较Link和@import标签
+`link标签在vue项目中可以用于加载全局样式，比如在入口文件中加载index.html`
+<link> 标签：HTML 文档在解析时，会同步加载 <link> 引入的 CSS 文件,可以同步加载多个样式表。它不会阻塞 HTML 的解析，但在样式表加载完毕之前，页面不会渲染。<link> 更适合加载外部样式表，尤其是全局样式表。
+@import：在 CSS 中使用 @import 会在页面加载完毕后才加载导入的 CSS 文件，因此相较于 <link>，@import 会导致样式加载得更慢。@import 的文件是在解析到该语句时才会加载，不是立即加载的。
+
+<link> 标签：可以在 HTML 文件中使用，且它不仅限于引入 CSS，还可以用于引入其他资源，比如网站的图标（favicon）。
+@import：只能在 CSS 文件或 <style> 标签内使用，并且只能导入 CSS 文件。
+
+<link> 标签：由于 <link> 标签引入的 CSS 文件是同步加载的，它的样式会立即应用，通常在解析 HTML 文档时优先加载。
+@import：由于 @import 的 CSS 文件加载较晚，可能会影响其优先级，在某些情况下，样式可能会在页面完全渲染后才应用。
+
+<link> 标签：从最早的浏览器版本开始就广泛支持，几乎所有现代浏览器都能良好处理 <link>。
+@import：较新的浏览器可以很好地支持 @import，但在早期的浏览器（如 IE5 或更旧版本）中可能存在兼容性问题。
+
+<link> 标签：可以并行加载多个 CSS 文件，浏览器会同时下载多个 <link> 标签指定的资源。
+@import：由于 @import 是在解析到该语句时才加载，且依赖于前一个 CSS 文件的加载，导致不能并行加载，会引入额外的延迟。
+
+<link> 标签：推荐用于所有外部样式表的引入，特别是在开发现代 Web 项目时。一般在 <head> 标签中使用 <link> 来引入外部 CSS 文件。
+@import：通常用于将多个 CSS 文件组合在一起，或者将某些样式根据条件导入，比如在某些特定条件下导入特定样式表。
+
+<link> 标签：由于是直接在 HTML 中使用的，你可以通过 JavaScript 动态地添加或移除 <link> 标签，从而控制样式表的加载和应用。
+@import：只能在 CSS 中使用，无法通过 JavaScript 动态地操作，灵活性不如 <link>。
