@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS</title>
+    <style>
+        #result{
+            width:200px;
+            height:100px;
+            border:solid 1px #90b;
+        }
+    </style>
+</head>
+<body>
+    <!-- CORS（Cross-Origin Resource Sharing，跨域资源共享）是一种机制，用于在浏览器和服务器之间管理跨源（即不同源）HTTP请求的授权问题。
+    当浏览器中的前端代码（通常是通过 JavaScript 发起的请求）尝试从一个源（域、协议和端口的组合，如 http://example.com）
+    请求资源来自另一个源（如 http://api.example.com）时，浏览器会执行跨域请求控制。
+    对于请求（例如使用 GET、POST 或 HEAD 方法，并且不使用自定义头部的请求），浏览器会自动发送一个预检请求（OPTIONS 请求）到目标服务器，
+    以确定是否允许跨域请求。如果服务器返回正确的 CORS 头部（例如 Access-Control-Allow-Origin），则浏览器允许该跨域请求。 -->
+    
+    <!-- 服务器通过设置 HTTP 响应头部来指示允许跨域请求的来源、方法和头部信息。常见的 CORS 头部包括：
+    Access-Control-Allow-Origin：指定允许访问资源的域。可以是单个域名、多个域名的列表或 *（表示允许所有域）。
+    Access-Control-Allow-Methods：指定允许的 HTTP 方法（如 GET、POST、PUT 等）。
+    Access-Control-Allow-Headers：指定允许的 HTTP 头部。
+    Access-Control-Allow-Credentials：指定是否允许发送 Cookie。 -->
+
+    <button>发送请求</button>
+    <div id="result"></div>
+    <script>
+        const btn = document.querySelector('button');
+
+        btn.onclick = function(){
+            //1. 创建对象
+            const x = new XMLHttpRequest();
+            //2. 初始化设置
+            x.open("GET", "http://127.0.0.1:8000/cors-server");
+            //3. 发送
+            x.send();
+            //4. 绑定事件
+            x.onreadystatechange = function(){
+                if(x.readyState === 4){
+                    if(x.status >= 200 && x.status < 300){
+                        //输出响应体
+                        console.log(x.response);
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
