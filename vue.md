@@ -768,6 +768,9 @@ const updateCursor = async () => {
     height: calc(v-bind('cursorHeight') * 1px);
 }
 
+## vue和react的区别
+
+
 
 
 

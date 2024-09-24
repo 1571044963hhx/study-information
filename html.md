@@ -556,6 +556,12 @@ body { @include theme(dark); }
   border-color: #ebccd1;
 }
 @use：用于导入另一个Sass文件中的变量、函数和mixin，并且使用`命名空间`来访问它们,一般配合@forward使用。
+@forward：将@forward 'variables';里面的样式导入，并导出，因此其它文件可以使用@use 'components';使用variables和components的变量。
+
+`补充：@import,@use的区别`
+@use最近在逐渐取代@import
+1、污染 两个@import样式文件定义了同一个变量（重名），后面一个覆盖前面，@use  'var.scss' as common,使用时common.$n属性，不会造成污染问题。
+2、变量私有，我们可以使用@import里面定义的变量，使用@use并这样定义变量$_n，外部不能使用这个变量
 
 ## 说说设备像素、css像素、设备独立像素dip、dpr、ppi 之间的区别？
 css像素：在没有缩放的情况下，1css像素等于1个设备独立像素
@@ -653,7 +659,7 @@ CSS3动画或者过渡尽量使用transform和opacity来实现动画，不要使
 @import:需要在css文件中使用，早期的浏览器可能不支持，但会增加额外的 HTTP 请求，影响性能。只有当解析到该css文件的这一行时才会进行加载文件，而且这个css文件是`同步单线`加载的，只有加载完这个文件才会加载下一个文件
 Link:<link> 标签在 HTML 解析时立即加载 CSS 文件，并行加载，不会阻塞页面渲染。也可以通过JavaScript动态加载。
 
-## 浏览器生成页面的过程
+## 浏览器生成页面的过程(浏览器的渲染原理)
 1、当浏览器接收到服务器的 HTML 响应后，开始逐行解析 HTML 标记，并构建 DOM树，`遇到 <script> 标签时，会暂停解析 HTML，开始加载和执行 JavaScript。`，与此同时加载 CSS，浏览器会根据 HTML 中的 <link> 标签或嵌入的 <style> 标签加载并解析 CSS 文件构建 CSSOM 树。
 2、构建渲染树：浏览器结合 DOM 树和 CSSOM 树，创建渲染树（Render Tree）。
 渲染树节点：渲染树中的每个节点对应一个将被绘制到屏幕上的元素。渲染树不包含隐藏的元素（如 display: none）。
